@@ -3,6 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.0'
 
+gem 'bcrypt', '~> 3.1', '>= 3.1.12'
 gem 'bootsnap', '~> 1.4', '>= 1.4.2', require: false
 gem 'coffee-rails', '~> 4.2', '>= 4.2.2'
 gem 'jbuilder', '~> 2.8'
@@ -17,8 +18,6 @@ gem 'uglifier', '~> 4.1', '>= 4.1.20'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
