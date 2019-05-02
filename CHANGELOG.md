@@ -1,4 +1,11 @@
-# bank_accounting 0.0.1 (Apr 30, 2019)
+# bank_accounting 0.0.2 (Mai 02, 2019)
+
+* Configured some gems
+* TDD: Added tests to Users Model
+
+  *Marcelo Toledo*
+
+## bank_accounting 0.0.1 (Apr 30, 2019)
 
 * Created project
 * Configured project
