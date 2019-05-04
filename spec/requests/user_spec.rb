@@ -17,9 +17,9 @@ RSpec.describe 'UsersController', type: :request do
     context 'when the request is invalid' do
       before { post '/users', params: invalid_params }
 
-      it 'creates an user' do
-        # Note `json` is a custom helper to parse JSON responses
+      it 'returns status code 422' do
         expect(response).to have_http_status :unprocessable_entity
+        # Note `json` is a custom helper to parse JSON responses
         expect(json).not_to be_empty
       end
     end
@@ -40,22 +40,28 @@ RSpec.describe 'UsersController', type: :request do
   end
 
   describe 'GET /users' do
-    context 'when returns empty' do
-      before { get '/users' }
+    context 'when the user is unauthorized' do
+      before do
+        get '/users',
+            headers: basic_credentials('user@email.com', '00000000')
+      end
 
-      it { expect(json).to be_empty }
-      it { expect(json.size).to eq 0 }
+      it 'returns status code 401' do
+        expect(response).to have_http_status :unauthorized
+      end
     end
 
     context 'when returns users' do
+      let(:user) { create(:user) }
+
       before do
         create_list(:user, 25)
-        get '/users'
+        get '/users', headers: basic_credentials(user.cpf, user.password)
       end
 
       it { expect(json).not_to be_empty }
       it { expect(json.size).to eq 20 }
-      it { expect(User.count).to eq 25 }
+      it { expect(User.count).to eq 26 }
     end
   end
 
@@ -63,7 +69,8 @@ RSpec.describe 'UsersController', type: :request do
     let!(:user) { create(:user) }
 
     before do
-      get "/users/#{user_id}"
+      get "/users/#{user_id}",
+          headers: basic_credentials(user.cpf, user.password)
     end
 
     context 'when user is not found' do
