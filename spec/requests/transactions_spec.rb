@@ -41,7 +41,7 @@ RSpec.describe 'TransactionsController', type: :request do
       end
     end
 
-    context 'when the transaction is of kind deposit' do
+    context 'when the transaction is of kind debit' do
       let(:user) { create(:user) }
       let(:account) { create(:account, user: user) }
 
@@ -137,28 +137,25 @@ RSpec.describe 'TransactionsController', type: :request do
       end
     end
 
-    context 'when the transaction is of kind deposit' do
+    context 'when the request is valid' do
       let(:user) { create(:user) }
       let(:account) { create(:account, user: user) }
       let(:transaction) { create(:transaction, account: account) }
       let(:id) { transaction.id }
+      let(:kind) { transaction.kind }
+      let(:value) { transaction.value }
 
-      context 'when the request is valid' do
-        let(:kind) { transaction.kind }
-        let(:value) { transaction.value }
+      before do
+        get "/users/#{user.id}/accounts/#{account.id}/transactions/#{id}",
+            headers: basic_credentials(user.cpf, user.password)
+      end
 
-        before do
-          get "/users/#{user.id}/accounts/#{account.id}/transactions/#{id}",
-              headers: basic_credentials(user.cpf, user.password)
-        end
-
-        it 'returns the transaction' do
-          expect(response).to have_http_status :ok
-          expect(json).not_to be_empty
-          expect(json['kind']).to eq kind
-          expect(formatted_currency(json['value'])).
-            to eq formatted_currency(value)
-        end
+      it 'returns the transaction' do
+        expect(response).to have_http_status :ok
+        expect(json).not_to be_empty
+        expect(json['kind']).to eq kind
+        expect(formatted_currency(json['value'])).
+          to eq formatted_currency(value)
       end
     end
   end
