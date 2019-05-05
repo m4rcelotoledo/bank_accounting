@@ -1,15 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe 'AccountsController', type: :request do
-  describe 'POST /accounts' do
+  describe 'POST /users/:user_id/accounts' do
     let(:user) { create(:user) }
-    let(:invalid_params) { { cpf: user } }
     let(:valid_params) { { user_id: user.id } }
 
     context 'when the request is invalid' do
       before do
-        post '/accounts',
-             params: invalid_params,
+        post '/users/x/accounts',
              headers: basic_credentials(user.cpf, user.password)
       end
 
@@ -23,7 +21,7 @@ RSpec.describe 'AccountsController', type: :request do
       let(:account) { User.find(user.id).account }
 
       before do
-        post '/accounts',
+        post "/users/#{user.id}/accounts",
              params: valid_params,
              headers: basic_credentials(user.cpf, user.password)
       end
@@ -38,13 +36,50 @@ RSpec.describe 'AccountsController', type: :request do
 
     context 'when the user is unauthorized' do
       before do
-        post '/accounts',
+        post "/users/#{user.id}/accounts",
              params: valid_params,
              headers: basic_credentials('user@email.com', '00000000')
       end
 
       it 'returns status code 401' do
         expect(response).to have_http_status :unauthorized
+      end
+    end
+  end
+
+  describe 'GET /users/:user_id/accounts/:id' do
+    let(:user) { create(:user) }
+
+    context 'when the record exists' do
+      let(:account) { create(:account, user: user) }
+
+      before do
+        get "/users/#{user.id}/accounts/#{account.id}",
+            headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns the account' do
+        expect(json).not_to be_empty
+        expect(json['id']).to eq account.id
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status :ok
+      end
+    end
+
+    context 'when the record does not exist' do
+      before do
+        get "/users/#{user.id}/accounts/100",
+            headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status :not_found
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match(/Couldn't find Account/)
       end
     end
   end

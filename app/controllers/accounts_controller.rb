@@ -5,6 +5,13 @@ class AccountsController < ApplicationController
     json_response @account, :created
   end
 
+  # GET /users/:user_id/accounts/:id
+  def show
+    @account = Account.find(params[:id])
+
+    json_response @account
+  end
+
   private
 
   def account_params
