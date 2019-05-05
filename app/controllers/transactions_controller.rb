@@ -6,6 +6,13 @@ class TransactionsController < ApplicationController
     json_response @transaction, :created
   end
 
+  # GET /users/:user_id/accounts/:account_id/transactions/:id
+  def show
+    @transaction = Transaction.find(params[:id])
+
+    json_response @transaction
+  end
+
   private
 
   def transaction_params
