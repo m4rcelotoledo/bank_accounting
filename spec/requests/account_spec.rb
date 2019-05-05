@@ -83,4 +83,21 @@ RSpec.describe 'AccountsController', type: :request do
       end
     end
   end
+
+  describe 'GET /users/:user_id/accounts/:account_id/balance' do
+    context 'accounts starting with zero balance' do
+      let(:user) { create(:user) }
+      let(:account) { create(:account_with_transaction, user: user) }
+
+      before do
+        get "/users/#{user.id}/accounts/#{account.id}/balance",
+            headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it do
+        expect(response).to have_http_status :ok
+        expect(json).to eq 0.0
+      end
+    end
+  end
 end

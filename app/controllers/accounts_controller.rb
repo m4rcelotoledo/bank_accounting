@@ -1,6 +1,7 @@
 class AccountsController < ApplicationController
   def create
     @account = Account.create!(account_params)
+    AccountService.balance_initial @account.id
 
     json_response @account, :created
   end
@@ -15,6 +16,6 @@ class AccountsController < ApplicationController
   private
 
   def account_params
-    params.permit(:user_id)
+    params.permit(:account_id, :user_id)
   end
 end
