@@ -1,4 +1,13 @@
 class AccountsController < ApplicationController
+  # GET /users/:user_id/accounts/balance
+  def balance
+    account = Account.find(account_params[:account_id])
+    @balance = AccountService.current_balance(account)
+
+    json_response @balance
+  end
+
+  # POST /users/:user_id/accounts
   def create
     @account = Account.create!(account_params)
     AccountService.balance_initial @account.id
