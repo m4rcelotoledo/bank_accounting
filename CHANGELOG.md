@@ -1,4 +1,10 @@
-# bank_accounting 0.0.5 (Mai 06, 2019)
+# bank_accounting 0.0.6 (Mai 25, 2019)
+
+* Update README.md
+
+  *Marcelo Toledo*
+
+## bank_accounting 0.0.5 (Mai 06, 2019)
 
 * Fixed some specs
 * TDD: Added new validations to transactions
