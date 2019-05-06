@@ -1,4 +1,13 @@
-# bank_accounting 0.0.4 (Mai 05, 2019)
+# bank_accounting 0.0.5 (Mai 06, 2019)
+
+* Fixed some specs
+* TDD: Added new validations to transactions
+* Refactored many files
+* TDD: Added Transfer
+
+  *Marcelo Toledo*
+
+## bank_accounting 0.0.4 (Mai 05, 2019)
 
 * TDD: Added tests to Transaction Model
 * Added Format Helper
