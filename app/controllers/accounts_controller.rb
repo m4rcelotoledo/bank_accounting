@@ -1,8 +1,11 @@
 class AccountsController < ApplicationController
-  # GET /users/:user_id/accounts/balance
+  before_action :set_account, only: :show
+  attr_reader :account
+
+  # GET /balance
   def balance
-    account = Account.find(account_params[:account_id])
-    @balance = AccountService.current_balance(account)
+    account = Account.find account_params[:account]
+    @balance = account.current_balance
 
     json_response @balance
   end
@@ -17,14 +20,16 @@ class AccountsController < ApplicationController
 
   # GET /users/:user_id/accounts/:id
   def show
-    @account = Account.find(params[:id])
-
     json_response @account
   end
 
   private
 
   def account_params
-    params.permit(:account_id, :user_id)
+    params.permit(:account, :user_id)
+  end
+
+  def set_account
+    @account = Account.find params[:id]
   end
 end
