@@ -1,12 +1,15 @@
 class TransactionsController < ApplicationController
-  attr_reader :account
   before_action :set_account, only: :create
+  attr_reader :account
 
   # POST /users/:user_id/accounts/:account_id/transactions
   def create
-    last_balance = AccountService.current_balance(account)
-    @transaction = Transaction.create!(transaction_params)
-    AccountService.update_balance!(last_balance, @transaction)
+    balance = account.current_balance
+
+    ActiveRecord::Base.transaction do
+      @transaction = Transaction.create!(transaction_params)
+      AccountService.update_balance!(balance, @transaction)
+    end
 
     json_response @transaction, :created
   end

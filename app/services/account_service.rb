@@ -5,21 +5,19 @@ class AccountService
     )
   end
 
-  def self.current_balance(account)
-    account.transactions.last.balance
-  end
+  def self.update_balance!(balance, transaction)
+    ActiveRecord::Base.transaction do
+      if transaction.kind == 'credit'
+        transaction.balance = balance + transaction.value
+      else
+        raise InsufficientFunds, 'Transaction canceled' unless
+          sufficient_funds?(balance, transaction.value)
 
-  def self.update_balance!(last_balance, transaction)
-    if transaction.kind == 'credit'
-      transaction.balance = last_balance + transaction.value
-    else
-      raise InsufficientFunds, 'Transaction canceled' unless
-        sufficient_funds?(last_balance, transaction)
+        transaction.balance = balance - transaction.value
+      end
 
-      transaction.balance = last_balance - transaction.value
+      transaction.save!
     end
-
-    transaction.save!
   end
 
   def self.sufficient_funds?(last_balance, transaction)

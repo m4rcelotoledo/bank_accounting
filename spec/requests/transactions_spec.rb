@@ -3,22 +3,8 @@ require 'rails_helper'
 RSpec.describe 'TransactionsController', type: :request do
   describe 'POST /users/:user_id/accounts/:account_id/transactions' do
     context 'when the user is unauthorized' do
-      let(:user) { create(:user) }
-      let(:account) { create(:account, user: user) }
-      let(:kind) { 'debit' }
-      let(:value) { Faker::Commerce.price(50..100.0, as_string: true) }
-      let(:valid_params) do
-        {
-          user_id: user.id,
-          account_id: account.id,
-          kind: kind,
-          value: value
-        }
-      end
-
       before do
-        post "/users/#{user.id}/accounts",
-             params: valid_params,
+        post '/users/1/accounts',
              headers: basic_credentials('user@email.com', '00000000')
       end
 

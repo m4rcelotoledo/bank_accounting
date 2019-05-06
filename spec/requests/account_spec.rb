@@ -84,13 +84,14 @@ RSpec.describe 'AccountsController', type: :request do
     end
   end
 
-  describe 'GET /users/:user_id/accounts/:account_id/balance' do
+  describe 'GET /balance' do
     context 'accounts starting with zero balance' do
       let(:user) { create(:user) }
       let(:account) { create(:account_with_transaction, user: user) }
 
       before do
-        get "/users/#{user.id}/accounts/#{account.id}/balance",
+        get '/balance',
+            params: { account: account.id },
             headers: basic_credentials(user.cpf, user.password)
       end
 
