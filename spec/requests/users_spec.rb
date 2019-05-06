@@ -18,9 +18,8 @@ RSpec.describe 'UsersController', type: :request do
       before { post '/users', params: invalid_params }
 
       it 'returns status code 422' do
-        expect(response).to have_http_status :unprocessable_entity
-        # Note `json` is a custom helper to parse JSON responses
         expect(json).not_to be_empty
+        expect(response).to have_http_status :unprocessable_entity
       end
     end
 

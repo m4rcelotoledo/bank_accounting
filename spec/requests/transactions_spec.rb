@@ -29,9 +29,17 @@ RSpec.describe 'TransactionsController', type: :request do
 
     context 'when the request is invalid' do
       let(:user) { create(:user) }
+      let(:account) { create(:account_with_transaction, user: user) }
+      let(:invalid_params) do
+        {
+          user_id: user.id,
+          account_id: account.id
+        }
+      end
 
       before do
-        post "/users/#{user.id}/accounts/xxxx/transactions",
+        post "/users/#{user.id}/accounts/#{account.id}/transactions",
+             params: invalid_params,
              headers: basic_credentials(user.cpf, user.password)
       end
 
@@ -42,10 +50,9 @@ RSpec.describe 'TransactionsController', type: :request do
     end
 
     context 'when the transaction is of kind debit' do
-      let(:user) { create(:user) }
-      let(:account) { create(:account, user: user) }
-
-      context 'when the request is valid' do
+      context 'and the request is valid' do
+        let(:user) { create(:user) }
+        let(:account) { create(:account_with_transaction, user: user) }
         let(:kind) { 'debit' }
         let(:value) { Faker::Commerce.price(50..100.0, as_string: true) }
         let(:valid_params) do
@@ -57,27 +64,44 @@ RSpec.describe 'TransactionsController', type: :request do
           }
         end
 
-        before do
+        subject do
           post "/users/#{user.id}/accounts/#{account.id}/transactions",
                params: valid_params,
                headers: basic_credentials(user.cpf, user.password)
         end
 
-        it 'creates a transaction' do
-          expect(response).to have_http_status :created
-          expect(json).not_to be_empty
-          expect(json['kind']).to eq kind
-          expect(formatted_currency(json['value'])).
-            to eq formatted_currency(value)
+        context 'and balance is not enough' do
+          it 'transaction is canceled' do
+            expect { subject }.
+              to raise_exception InsufficientFunds, 'Transaction canceled'
+          end
+        end
+
+        context 'creates a transaction' do
+          before do
+            transaction = account.transactions.last
+            transaction.balance = 500.0
+            transaction.save!
+            subject
+          end
+
+          it 'balance is updated' do
+            expect(response).to have_http_status :created
+            expect(json).not_to be_empty
+            expect(json['kind']).to eq kind
+            expect(formatted_currency(json['value'])).
+              to eq formatted_currency(value)
+            expect(formatted_currency(json['balance'])).
+              to eq formatted_currency(500.0 - value.to_f)
+          end
         end
       end
     end
 
     context 'when the transaction is of kind credit' do
-      let(:user) { create(:user) }
-      let(:account) { create(:account, user: user) }
-
-      context 'when the request is valid' do
+      context 'and the request is valid' do
+        let(:user) { create(:user) }
+        let(:account) { create(:account_with_transaction, user: user) }
         let(:kind) { 'credit' }
         let(:value) { Faker::Commerce.price(50..100.0, as_string: true) }
         let(:valid_params) do
@@ -103,6 +127,36 @@ RSpec.describe 'TransactionsController', type: :request do
             to eq formatted_currency(value)
         end
       end
+
+      context 'and the transaction is created' do
+        let(:user) { create(:user) }
+        let(:account) { create(:account_with_transaction, user: user) }
+        let(:kind) { 'credit' }
+        let(:value) { Faker::Commerce.price(50..100.0, as_string: true) }
+        let(:valid_params) do
+          {
+            user_id: user.id,
+            account_id: account.id,
+            kind: kind,
+            value: value
+          }
+        end
+
+        before do
+          post "/users/#{user.id}/accounts/#{account.id}/transactions",
+               params: valid_params,
+               headers: basic_credentials(user.cpf, user.password)
+        end
+
+        it 'balance is updated' do
+          expect(response).to have_http_status :created
+          expect(json['kind']).to eq kind
+          expect(formatted_currency(json['value'])).
+            to eq formatted_currency(value)
+          expect(formatted_currency(json['balance'])).
+            to eq formatted_currency(value)
+        end
+      end
     end
   end
 
@@ -123,11 +177,26 @@ RSpec.describe 'TransactionsController', type: :request do
       end
     end
 
-    context 'when the request is invalid' do
+    context 'when the account is not found' do
       let(:user) { create(:user) }
 
       before do
         get "/users/#{user.id}/accounts/500/transactions/500",
+            headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status :not_found
+        expect(json).not_to be_empty
+      end
+    end
+
+    context 'when the transaction is not found' do
+      let(:user) { create(:user) }
+      let(:account) { create(:account_with_transaction, user: user) }
+
+      before do
+        get "/users/#{user.id}/accounts/#{account.id}/transactions/500",
             headers: basic_credentials(user.cpf, user.password)
       end
 
