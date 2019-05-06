@@ -6,4 +6,5 @@ Rails.application.routes.draw do
   end
 
   get '/balance', to: 'accounts#balance'
+  post '/transfer', to: 'transactions#transfer'
 end

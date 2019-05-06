@@ -21,6 +21,13 @@ class TransactionsController < ApplicationController
     json_response @transaction
   end
 
+  def transfer
+    AccountService.transfer!(params[:source_account],
+                             params[:destination_account], params[:amount])
+
+    json_response 'Transfer successful', :created
+  end
+
   private
 
   def transaction_params
