@@ -33,6 +33,8 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
   gem 'rubocop'
   gem 'rubocop-performance'
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec'
   gem 'rubycritic'
   gem 'shoulda-matchers', '~> 4.0', '>= 4.0.1'
   gem 'simplecov'
