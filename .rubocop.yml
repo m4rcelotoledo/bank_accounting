@@ -29,6 +29,15 @@ Metrics/BlockLength:
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
 
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
 Layout/DotPosition:
   EnforcedStyle: trailing
 
@@ -40,3 +49,6 @@ RSpec/ExampleLength:
 
 RSpec/MultipleExpectations:
   Enabled: false
+
+RSpec/NestedGroups:
+  Max: 5
