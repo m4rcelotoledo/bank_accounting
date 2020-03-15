@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe 'TransactionsController', type: :request do
+describe 'TransactionsController', type: :request do
   describe 'POST /users/:user_id/accounts/:account_id/transactions' do
     context 'when the user is unauthorized' do
       before do
@@ -36,7 +38,13 @@ RSpec.describe 'TransactionsController', type: :request do
     end
 
     context 'when the transaction is of kind debit' do
-      context 'and the request is valid' do
+      context 'with the request is valid' do
+        subject(:post_transaction) do
+          post "/users/#{user.id}/accounts/#{account.id}/transactions",
+               params: valid_params,
+               headers: basic_credentials(user.cpf, user.password)
+        end
+
         let(:user) { create(:user) }
         let(:account) { create(:account_with_transaction, user: user) }
         let(:kind) { 'debit' }
@@ -50,27 +58,21 @@ RSpec.describe 'TransactionsController', type: :request do
           }
         end
 
-        subject do
-          post "/users/#{user.id}/accounts/#{account.id}/transactions",
-               params: valid_params,
-               headers: basic_credentials(user.cpf, user.password)
-        end
-
-        context 'and balance is not enough' do
+        context 'with balance is not enough' do
           it 'transaction is canceled' do
-            expect { subject }.
+            expect { post_transaction }.
               to raise_exception InsufficientFunds, 'Transaction canceled'
             account.reload
             expect(account.current_balance).to eq 0
           end
         end
 
-        context 'creates a transaction' do
+        context 'with creates a transaction' do
           before do
             transaction = account.transactions.last
             transaction.balance = 500.0
             transaction.save!
-            subject
+            post_transaction
           end
 
           it 'balance is updated' do
@@ -87,7 +89,7 @@ RSpec.describe 'TransactionsController', type: :request do
     end
 
     context 'when the transaction is of kind credit' do
-      context 'and the request is valid' do
+      context 'with the request is valid' do
         let(:user) { create(:user) }
         let(:account) { create(:account_with_transaction, user: user) }
         let(:kind) { 'credit' }
@@ -116,7 +118,7 @@ RSpec.describe 'TransactionsController', type: :request do
         end
       end
 
-      context 'and the transaction is created' do
+      context 'with the transaction is created' do
         let(:user) { create(:user) }
         let(:account) { create(:account_with_transaction, user: user) }
         let(:kind) { 'credit' }
@@ -211,6 +213,12 @@ RSpec.describe 'TransactionsController', type: :request do
     end
 
     context 'when the balance from source account is not enough' do
+      subject(:post_transfer) do
+        post '/transfer',
+             params: valid_params,
+             headers: basic_credentials(user.cpf, user.password)
+      end
+
       let(:user) { create(:user) }
       let(:another_user) { create(:user) }
       let(:source_account) do
@@ -229,14 +237,8 @@ RSpec.describe 'TransactionsController', type: :request do
         }
       end
 
-      subject do
-        post '/transfer',
-             params: valid_params,
-             headers: basic_credentials(user.cpf, user.password)
-      end
-
       it 'transaction is canceled' do
-        expect { subject }.
+        expect { post_transfer }.
           to raise_exception InsufficientFunds, 'Transaction canceled'
         source_account.reload
         destination_account.reload

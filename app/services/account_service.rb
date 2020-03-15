@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccountService
   def self.balance_initial(account_id)
     Transaction.create!(

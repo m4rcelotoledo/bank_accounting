@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'AccountsController', type: :request do
@@ -85,7 +87,7 @@ RSpec.describe 'AccountsController', type: :request do
   end
 
   describe 'GET /balance' do
-    context 'accounts starting with zero balance' do
+    context 'when accounts starting with zero balance' do
       let(:user) { create(:user) }
       let(:account) { create(:account_with_transaction, user: user) }
 

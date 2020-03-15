@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.describe 'UsersController', type: :request do
+describe 'UsersController', type: :request do
   describe 'POST /users' do
     let(:cpf) { Faker::IDNumber.brazilian_citizen_number }
     let(:name) { Faker::Books::Dune.character }
