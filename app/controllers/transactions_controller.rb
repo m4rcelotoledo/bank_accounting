@@ -2,6 +2,7 @@
 
 class TransactionsController < ApplicationController
   before_action :set_account, only: :create
+
   attr_reader :account
 
   # POST /users/:user_id/accounts/:account_id/transactions
@@ -24,8 +25,11 @@ class TransactionsController < ApplicationController
   end
 
   def transfer
-    AccountService.transfer!(params[:source_account],
-                             params[:destination_account], params[:amount])
+    AccountService.transfer!(
+      params[:source_account],
+      params[:destination_account],
+      params[:amount]
+    )
 
     json_response 'Transfer successful', :created
   end
