@@ -5,6 +5,6 @@ class Account < ApplicationRecord
   has_many :transactions, dependent: :destroy
 
   def current_balance
-    transactions.last.balance
+    transactions.sum(&:value)
   end
 end

@@ -6,7 +6,7 @@ class AccountsController < ApplicationController
 
   # GET /balance
   def balance
-    account = Account.find account_params[:account]
+    account = Account.find balance_params[:account]
     @balance = account.current_balance
 
     json_response @balance
@@ -28,6 +28,10 @@ class AccountsController < ApplicationController
   private
 
   def account_params
+    params.permit(:user_id)
+  end
+
+  def balance_params
     params.permit(:account, :user_id)
   end
 
