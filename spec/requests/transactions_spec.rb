@@ -48,7 +48,7 @@ describe 'TransactionsController', type: :request do
         let(:user) { create(:user) }
         let(:account) { create(:account_with_transaction, user: user) }
         let(:kind) { 'debit' }
-        let(:value) { Faker::Commerce.price(50..100.0, as_string: true) }
+        let(:value) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
         let(:valid_params) do
           {
             user_id: user.id,
@@ -93,7 +93,7 @@ describe 'TransactionsController', type: :request do
         let(:user) { create(:user) }
         let(:account) { create(:account_with_transaction, user: user) }
         let(:kind) { 'credit' }
-        let(:value) { Faker::Commerce.price(50..100.0, as_string: true) }
+        let(:value) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
         let(:valid_params) do
           {
             user_id: user.id,
@@ -122,7 +122,7 @@ describe 'TransactionsController', type: :request do
         let(:user) { create(:user) }
         let(:account) { create(:account_with_transaction, user: user) }
         let(:kind) { 'credit' }
-        let(:value) { Faker::Commerce.price(50..100.0, as_string: true) }
+        let(:value) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
         let(:valid_params) do
           {
             user_id: user.id,
@@ -167,7 +167,7 @@ describe 'TransactionsController', type: :request do
       let(:destination_account) do
         create(:account_with_transaction, user: user)
       end
-      let(:amount) { Faker::Commerce.price(50..100.0, as_string: true) }
+      let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:invalid_params) do
         {
           user_id: user.id,
@@ -191,7 +191,7 @@ describe 'TransactionsController', type: :request do
     context 'when the destination account is not found' do
       let(:user) { create(:user) }
       let(:source_account) { create(:account_with_transaction, user: user) }
-      let(:amount) { Faker::Commerce.price(50..100.0, as_string: true) }
+      let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:invalid_params) do
         {
           user_id: user.id,
@@ -227,7 +227,7 @@ describe 'TransactionsController', type: :request do
       let(:destination_account) do
         create(:account_with_transaction, user: another_user)
       end
-      let(:amount) { Faker::Commerce.price(50..100.0, as_string: true) }
+      let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:valid_params) do
         {
           user_id: user.id,
@@ -256,7 +256,7 @@ describe 'TransactionsController', type: :request do
       let(:destination_account) do
         create(:account_with_transaction, user: another_user)
       end
-      let(:amount) { Faker::Commerce.price(50..100.0, as_string: true) }
+      let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:valid_params) do
         {
           user_id: user.id,
