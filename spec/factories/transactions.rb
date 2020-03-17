@@ -5,6 +5,6 @@ FactoryBot.define do
     account
     kind { 'credit' }
     description { 'Deposit' }
-    value { Faker::Commerce.price(range: 10..100.0, as_string: true) }
+    amount { Faker::Commerce.price(range: 10..100.0, as_string: true) }
   end
 end

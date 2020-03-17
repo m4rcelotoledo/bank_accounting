@@ -9,7 +9,7 @@ FactoryBot.define do
         create(:transaction, account: account,
                              kind: 'initial_balance',
                              description: 'Initial Balance',
-                             value: 0)
+                             amount: 0)
       end
     end
   end
