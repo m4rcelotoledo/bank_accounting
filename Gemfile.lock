@@ -37,6 +37,11 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    active_model_serializers (0.10.10)
+      actionpack (>= 4.1, < 6.1)
+      activemodel (>= 4.1, < 6.1)
+      case_transform (>= 0.2)
+      jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
     activejob (6.0.2.1)
       activesupport (= 6.0.2.1)
       globalid (>= 0.3.6)
@@ -70,6 +75,8 @@ GEM
     brakeman (4.8.0)
     builder (3.2.4)
     byebug (11.1.1)
+    case_transform (0.2)
+      activesupport
     codeclimate-engine-rb (0.4.1)
       virtus (~> 1.0)
     coderay (1.1.2)
@@ -108,8 +115,7 @@ GEM
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     jaro_winkler (1.5.4)
-    jbuilder (2.10.0)
-      activesupport (>= 5.0.0)
+    jsonapi-renderer (0.2.2)
     kaminari (1.2.0)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.2.0)
@@ -291,13 +297,13 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  active_model_serializers (~> 0.10.10)
   bcrypt (~> 3.1)
   bootsnap (~> 1.4)
   brakeman
   database_cleaner (~> 1.8)
   factory_bot_rails (~> 5.1)
   faker (~> 2.10)
-  jbuilder (~> 2.10)
   kaminari (~> 1.2)
   listen (~> 3.2)
   pg (~> 1.2)

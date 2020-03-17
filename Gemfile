@@ -5,9 +5,9 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.5'
 
+gem 'active_model_serializers', '~> 0.10.10'
 gem 'bcrypt', '~> 3.1'
 gem 'bootsnap', '~> 1.4', require: false
-gem 'jbuilder', '~> 2.10'
 gem 'kaminari', '~> 1.2'
 gem 'pg', '~> 1.2'
 gem 'puma', '~> 4.3'
