@@ -17,7 +17,7 @@ describe 'UsersController', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/users', params: invalid_params }
+      before { post users_path, params: invalid_params }
 
       it 'returns status code 422' do
         expect(json).not_to be_empty
@@ -28,14 +28,14 @@ describe 'UsersController', type: :request do
     context 'when the request is valid' do
       let(:id) { User.find_by(cpf: cpf).id }
 
-      before { post '/users', params: valid_params }
+      before { post users_path, params: valid_params }
 
       it 'creates an user' do
         expect(response).to have_http_status :created
         expect(json).not_to be_empty
-        expect(json['id']).to eq id
-        expect(json['cpf']).to eq cpf
-        expect(json['name']).to eq name
+        expect(json[:id]).to eq id
+        expect(json[:cpf]).to eq cpf
+        expect(json[:name]).to eq name
       end
     end
   end
@@ -43,7 +43,7 @@ describe 'UsersController', type: :request do
   describe 'GET /users' do
     context 'when the user is unauthorized' do
       before do
-        get '/users',
+        get users_path,
             headers: basic_credentials('user@email.com', '00000000')
       end
 
@@ -57,7 +57,7 @@ describe 'UsersController', type: :request do
 
       before do
         create_list(:user, 25)
-        get '/users', headers: basic_credentials(user.cpf, user.password)
+        get users_path, headers: basic_credentials(user.cpf, user.password)
       end
 
       it { expect(json).not_to be_empty }
@@ -70,7 +70,7 @@ describe 'UsersController', type: :request do
     let!(:user) { create(:user) }
 
     before do
-      get "/users/#{user_id}",
+      get user_path(user_id),
           headers: basic_credentials(user.cpf, user.password)
     end
 

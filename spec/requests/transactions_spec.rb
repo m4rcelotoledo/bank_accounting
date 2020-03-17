@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 describe 'TransactionsController', type: :request do
-  describe 'POST /users/:user_id/accounts/:account_id/transactions' do
+  describe 'POST /deposit' do
     context 'when the user is unauthorized' do
       before do
-        post '/users/1/accounts',
+        post deposit_path,
              headers: basic_credentials('user@email.com', '00000000')
       end
 
@@ -18,15 +18,10 @@ describe 'TransactionsController', type: :request do
     context 'when the request is invalid' do
       let(:user) { create(:user) }
       let(:account) { create(:account_with_transaction, user: user) }
-      let(:invalid_params) do
-        {
-          user_id: user.id,
-          account_id: account.id
-        }
-      end
+      let(:invalid_params) { { account_id: account.id } }
 
       before do
-        post "/users/#{user.id}/accounts/#{account.id}/transactions",
+        post deposit_path,
              params: invalid_params,
              headers: basic_credentials(user.cpf, user.password)
       end
@@ -37,74 +32,24 @@ describe 'TransactionsController', type: :request do
       end
     end
 
-    context 'when the transaction is of kind debit' do
-      context 'with the request is valid' do
-        subject(:post_transaction) do
-          post "/users/#{user.id}/accounts/#{account.id}/transactions",
-               params: valid_params,
-               headers: basic_credentials(user.cpf, user.password)
-        end
-
-        let(:user) { create(:user) }
-        let(:account) { create(:account_with_transaction, user: user) }
-        let(:kind) { 'debit' }
-        let(:value) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
-        let(:valid_params) do
-          {
-            user_id: user.id,
-            account_id: account.id,
-            kind: kind,
-            value: value
-          }
-        end
-
-        context 'with balance is not enough' do
-          it 'transaction is canceled' do
-            expect { post_transaction }.
-              to raise_exception InsufficientFunds, 'Transaction canceled'
-            account.reload
-            expect(account.current_balance).to eq 0
-          end
-        end
-
-        context 'with creates a transaction' do
-          before do
-            transaction = account.transactions.last
-            transaction.balance = 500.0
-            transaction.save!
-            post_transaction
-          end
-
-          it 'balance is updated' do
-            expect(response).to have_http_status :created
-            expect(json).not_to be_empty
-            expect(json['kind']).to eq kind
-            expect(formatted_currency(json['value'])).
-              to eq formatted_currency(value)
-            expect(formatted_currency(json['balance'])).
-              to eq formatted_currency(500.0 - value.to_f)
-          end
-        end
-      end
-    end
-
     context 'when the transaction is of kind credit' do
       context 'with the request is valid' do
         let(:user) { create(:user) }
         let(:account) { create(:account_with_transaction, user: user) }
-        let(:kind) { 'credit' }
-        let(:value) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
+
+        let(:amount) do
+          Faker::Commerce.price(range: 50..100.0, as_string: true)
+        end
+
         let(:valid_params) do
           {
-            user_id: user.id,
             account_id: account.id,
-            kind: kind,
-            value: value
+            amount: amount
           }
         end
 
         before do
-          post "/users/#{user.id}/accounts/#{account.id}/transactions",
+          post deposit_path,
                params: valid_params,
                headers: basic_credentials(user.cpf, user.password)
         end
@@ -112,39 +57,46 @@ describe 'TransactionsController', type: :request do
         it 'creates a transaction' do
           expect(response).to have_http_status :created
           expect(json).not_to be_empty
-          expect(json['kind']).to eq kind
-          expect(formatted_currency(json['value'])).
-            to eq formatted_currency(value)
+          expect(json[:kind]).to eq 'credit'
+          expect(formatted_currency(account.current_balance)).to eq amount
         end
       end
 
       context 'with the transaction is created' do
         let(:user) { create(:user) }
         let(:account) { create(:account_with_transaction, user: user) }
-        let(:kind) { 'credit' }
-        let(:value) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
+        let(:document) { "##{account.id}##{account.transactions.last.id}" }
+        let(:new_transaction) { create(:transaction, account: account) }
+
+        let(:amount) do
+          Faker::Commerce.price(range: 50..100.0, as_string: true)
+        end
+
+        let(:expected_balance) do
+          formatted_currency(new_transaction.amount + amount.to_f)
+        end
+
         let(:valid_params) do
           {
-            user_id: user.id,
             account_id: account.id,
-            kind: kind,
-            value: value
+            amount: amount
           }
         end
 
         before do
-          post "/users/#{user.id}/accounts/#{account.id}/transactions",
+          new_transaction
+          post deposit_path,
                params: valid_params,
                headers: basic_credentials(user.cpf, user.password)
         end
 
         it 'balance is updated' do
           expect(response).to have_http_status :created
-          expect(json['kind']).to eq kind
-          expect(formatted_currency(json['value'])).
-            to eq formatted_currency(value)
-          expect(formatted_currency(json['balance'])).
-            to eq formatted_currency(value)
+          expect(json[:document]).to eq document
+          expect(json[:description]).to eq 'Deposit'
+          expect(json[:kind]).to eq 'credit'
+          expect(expected_balance).
+            to eq formatted_currency(account.current_balance)
         end
       end
     end
@@ -153,7 +105,7 @@ describe 'TransactionsController', type: :request do
   describe 'POST /transfer' do
     context 'when the user is unauthorized' do
       before do
-        post '/transfer',
+        post transfer_path,
              headers: basic_credentials('user@email.com', '00000000')
       end
 
@@ -170,15 +122,14 @@ describe 'TransactionsController', type: :request do
       let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:invalid_params) do
         {
-          user_id: user.id,
-          source_account: 9999,
+          account_id: 9999,
           destination_account: destination_account.id,
           amount: amount
         }
       end
 
       before do
-        post '/transfer',
+        post transfer_path,
              params: invalid_params,
              headers: basic_credentials(user.cpf, user.password)
       end
@@ -194,15 +145,14 @@ describe 'TransactionsController', type: :request do
       let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:invalid_params) do
         {
-          user_id: user.id,
-          source_account: source_account.id,
+          account_id: source_account.id,
           destination_account: 9999,
           amount: amount
         }
       end
 
       before do
-        post '/transfer',
+        post transfer_path,
              params: invalid_params,
              headers: basic_credentials(user.cpf, user.password)
       end
@@ -214,7 +164,7 @@ describe 'TransactionsController', type: :request do
 
     context 'when the balance from source account is not enough' do
       subject(:post_transfer) do
-        post '/transfer',
+        post transfer_path,
              params: valid_params,
              headers: basic_credentials(user.cpf, user.password)
       end
@@ -230,8 +180,7 @@ describe 'TransactionsController', type: :request do
       let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:valid_params) do
         {
-          user_id: user.id,
-          source_account: source_account.id,
+          account_id: source_account.id,
           destination_account: destination_account.id,
           amount: amount
         }
@@ -259,8 +208,7 @@ describe 'TransactionsController', type: :request do
       let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:valid_params) do
         {
-          user_id: user.id,
-          source_account: source_account.id,
+          account_id: source_account.id,
           destination_account: destination_account.id,
           amount: amount
         }
@@ -268,9 +216,9 @@ describe 'TransactionsController', type: :request do
 
       before do
         transaction = source_account.transactions.last
-        transaction.balance = 500.0
+        transaction.amount = 500.0
         transaction.save!
-        post '/transfer',
+        post transfer_path,
              params: valid_params,
              headers: basic_credentials(user.cpf, user.password)
       end
@@ -282,13 +230,15 @@ describe 'TransactionsController', type: :request do
         expect(response.body).to eq 'Transfer successful'
         expect(formatted_currency(source_account.current_balance)).
           to eq formatted_currency(500 - amount.to_f)
+        expect(source_account.transactions.last.kind).to eq 'debit'
         expect(formatted_currency(destination_account.current_balance)).
           to eq formatted_currency(amount.to_f)
+        expect(destination_account.transactions.last.kind).to eq 'credit'
       end
     end
   end
 
-  describe 'GET /users/:user_id/accounts/:account_id/transactions/:id' do
+  describe 'GET /transactions/:id' do
     context 'when the user is unauthorized' do
       let(:user) { create(:user) }
       let(:account) { create(:account, user: user) }
@@ -296,7 +246,7 @@ describe 'TransactionsController', type: :request do
       let(:id) { transaction.id }
 
       before do
-        get "/users/#{user.id}/accounts/#{account.id}/transactions/#{id}",
+        get transaction_path(id),
             headers: basic_credentials('user@email.com', '00000000')
       end
 
@@ -309,7 +259,8 @@ describe 'TransactionsController', type: :request do
       let(:user) { create(:user) }
 
       before do
-        get "/users/#{user.id}/accounts/500/transactions/500",
+        get transaction_path(500),
+            params: { account_id: 42 },
             headers: basic_credentials(user.cpf, user.password)
       end
 
@@ -324,7 +275,8 @@ describe 'TransactionsController', type: :request do
       let(:account) { create(:account_with_transaction, user: user) }
 
       before do
-        get "/users/#{user.id}/accounts/#{account.id}/transactions/500",
+        get transaction_path(500),
+            params: { account_id: account.id },
             headers: basic_credentials(user.cpf, user.password)
       end
 
@@ -340,19 +292,20 @@ describe 'TransactionsController', type: :request do
       let(:transaction) { create(:transaction, account: account) }
       let(:id) { transaction.id }
       let(:kind) { transaction.kind }
-      let(:value) { transaction.value }
+      let(:amount) { transaction.amount }
 
       before do
-        get "/users/#{user.id}/accounts/#{account.id}/transactions/#{id}",
+        get transaction_path(id),
+            params: { account_id: account.id },
             headers: basic_credentials(user.cpf, user.password)
       end
 
       it 'returns the transaction' do
         expect(response).to have_http_status :ok
         expect(json).not_to be_empty
-        expect(json['kind']).to eq kind
-        expect(formatted_currency(json['value'])).
-          to eq formatted_currency(value)
+        expect(json[:kind]).to eq kind
+        expect(formatted_currency(json[:amount])).
+          to eq formatted_currency(amount)
       end
     end
   end
