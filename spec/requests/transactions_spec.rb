@@ -32,72 +32,70 @@ describe 'TransactionsController', type: :request do
       end
     end
 
-    context 'when the transaction is of kind credit' do
-      context 'with the request is valid' do
-        let(:user) { create(:user) }
-        let(:account) { create(:account_with_transaction, user: user) }
+    context 'when the request is valid' do
+      let(:user) { create(:user) }
+      let(:account) { create(:account_with_transaction, user: user) }
 
-        let(:amount) do
-          Faker::Commerce.price(range: 50..100.0, as_string: true)
-        end
-
-        let(:valid_params) do
-          {
-            account_id: account.id,
-            amount: amount
-          }
-        end
-
-        before do
-          post deposit_path,
-               params: valid_params,
-               headers: basic_credentials(user.cpf, user.password)
-        end
-
-        it 'creates a transaction' do
-          expect(response).to have_http_status :created
-          expect(json).not_to be_empty
-          expect(json[:kind]).to eq 'credit'
-          expect(formatted_currency(account.current_balance)).to eq amount
-        end
+      let(:amount) do
+        Faker::Commerce.price(range: 50..100.0, as_string: true)
       end
 
-      context 'with the transaction is created' do
-        let(:user) { create(:user) }
-        let(:account) { create(:account_with_transaction, user: user) }
-        let(:document) { "##{account.id}##{account.transactions.last.id}" }
-        let(:new_transaction) { create(:transaction, account: account) }
+      let(:valid_params) do
+        {
+          account_id: account.id,
+          amount: amount
+        }
+      end
 
-        let(:amount) do
-          Faker::Commerce.price(range: 50..100.0, as_string: true)
-        end
+      before do
+        post deposit_path,
+             params: valid_params,
+             headers: basic_credentials(user.cpf, user.password)
+      end
 
-        let(:expected_balance) do
-          formatted_currency(new_transaction.amount + amount.to_f)
-        end
+      it 'creates a transaction' do
+        expect(response).to have_http_status :created
+        expect(json).not_to be_empty
+        expect(json[:kind]).to eq 'credit'
+        expect(formatted_currency(account.current_balance)).to eq amount
+      end
+    end
 
-        let(:valid_params) do
-          {
-            account_id: account.id,
-            amount: amount
-          }
-        end
+    context 'when the account has two transactions' do
+      let(:user) { create(:user) }
+      let(:account) { create(:account_with_transaction, user: user) }
+      let(:document) { "##{account.id}##{account.transactions.last.id}" }
+      let(:new_transaction) { create(:transaction, account: account) }
 
-        before do
-          new_transaction
-          post deposit_path,
-               params: valid_params,
-               headers: basic_credentials(user.cpf, user.password)
-        end
+      let(:amount) do
+        Faker::Commerce.price(range: 50..100.0, as_string: true)
+      end
 
-        it 'balance is updated' do
-          expect(response).to have_http_status :created
-          expect(json[:document]).to eq document
-          expect(json[:description]).to eq 'Deposit'
-          expect(json[:kind]).to eq 'credit'
-          expect(expected_balance).
-            to eq formatted_currency(account.current_balance)
-        end
+      let(:expected_balance) do
+        formatted_currency(new_transaction.amount + amount.to_f)
+      end
+
+      let(:valid_params) do
+        {
+          account_id: account.id,
+          amount: amount
+        }
+      end
+
+      before do
+        new_transaction
+        post deposit_path,
+             params: valid_params,
+             headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'balance is updated' do
+        expect(response).to have_http_status :created
+        expect(json[:document]).to eq document
+        expect(json[:description]).to eq 'Deposit'
+        expect(json[:kind]).to eq 'credit'
+        expect(expected_balance).
+          to eq formatted_currency(account.current_balance)
       end
     end
   end
