@@ -329,7 +329,6 @@ Param: Body, JSON(application/json)
 
 Response:
 
-
 ```json
 {
     "date": "2020-03-18T00:15:40.283Z",
