@@ -1,4 +1,23 @@
-# bank_accounting 0.0.6 (Mai 25, 2019)
+# bank_accounting 0.0.7 (Mar 17, 2020)
+
+* Updated ruby version
+* Updated a lot gems
+* Updated rubocop config
+* Updated travis config
+* Updated docker-compose
+* Routes refactored
+* Controllers refactored
+* TransactionService refactored
+* AccountService refactored
+* Get balance refactored
+* Added deposit
+* Added statement
+* Added serializer
+* Renamed transactions field: `value` to `amount`
+* Updated routes
+* Updated README.md
+
+## bank_accounting 0.0.6 (Mai 25, 2019)
 
 * Update README.md
 
