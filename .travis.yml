@@ -2,7 +2,7 @@ dist: trusty
 
 env:
   global:
-    - CC_TEST_REPORTER_ID=ebac51f766bcf57639e1fffd2ea0c0319917089598e4e10824777d7eb406cf4f
+    - CC_TEST_REPORTER_ID=f8a69cefebcbb5291de3f3479510d5d36c2d24661c016e130785993a1d337736
     - PGPORT=5433
 
 services:
