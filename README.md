@@ -14,13 +14,13 @@ Is a Rails application (API-only) to management Users, Accounts, and Transaction
 
 ## Technical Informations and dependencies
 
-* The Ruby language - version 2.6.0
-* The Rails gem     - version 5.2.3
-* RSpec             - version 3.8.2
-* Rubocop           - version 0.68.0
+* The Ruby language - version 2.6.5
+* The Rails gem     - version 6.0.2
+* RSpec Rails       - version 4.0.0.rc1
+* Rubocop           - version 0.80.1
 * PostgreSQL        - version 10
-* Docker            - version 18.09.5
-* Docker Compose    - version 1.24.0
+* Docker            - version 19.03.7-ce
+* Docker Compose    - version 1.25.4
 
 ## To use
 
@@ -68,11 +68,15 @@ bundle exec rspec           # => to running tests
 
 To see the application in action, starts the rails server to able [http://localhost:3000/](http://localhost:3000.)
 
+### Dockerfile
+
+[Dockerfile is here](https://github.com/marcelotoledo5000/Dockerfiles)
+
 ### API Documentation
 
 #### Authentication
 
-* Needs to use Basic Authentication.
+* Needs to use Basic Authentication: CPF and Password.
 
 The format of a WWW-Authenticate header for HTTP basic authentication is:
 
@@ -83,37 +87,15 @@ WWW-Authenticate: Basic realm="Our Site"
 #### Domain
 
 [http://localhost:3000/](http://localhost:3000)
-Header with: user = cpf, pass = password
+
+Headers with:
+
+user_cpf, password
+"Content-Type": "application/json"
 
 #### Endpoints
 
 ##### USERS
-
-INDEX
-
-```code
-GET: http://DOMAIN/users
-"http://localhost:3000/users"
-```
-
-Response:
-
-```code
-200 Ok
-```
-
-SHOW
-
-```code
-GET: http://DOMAIN/users/:id
-"http://localhost:3000/users/1"
-```
-
-Response:
-
-```code
-200 Ok
-```
 
 CREATE
 
@@ -133,30 +115,76 @@ Param: Body, JSON(application/json)
 
 Response:
 
-```code
-201 Created
+```json
+{
+    "id": 1,
+    "cpf": "12345678901",
+    "name": "Vladimir Harkonnen",
+    "password_digest": "$2a$12$4QpARHRIf06/8kVPiPMwtel2xNQ3NpGFWf5bXb7bXIe9Wmp4uWHRe",
+    "created_at": "2020-03-18T00:43:04.074Z",
+    "updated_at": "2020-03-18T00:43:04.074Z"
+}
 ```
 
-##### ACCOUNT
+```code
+status: 201 Created
+```
 
-SHOW
+INDEX
 
 ```code
-GET: http://DOMAIN/users/:user_id/accounts/:id
-"http://localhost:3000/users/1/accounts/1"
+GET: http://DOMAIN/users
+"http://localhost:3000/users"
 ```
 
 Response:
 
-```code
-200 Ok
+```json
+{
+    "id": 1,
+    "cpf": "12345678901",
+    "name": "Vladimir Harkonnen",
+    "password_digest": "$2a$12$4QpARHRIf06/8kVPiPMwtel2xNQ3NpGFWf5bXb7bXIe9Wmp4uWHRe",
+    "created_at": "2020-03-18T00:43:04.074Z",
+    "updated_at": "2020-03-18T00:43:04.074Z"
+}
 ```
+
+```code
+status: 200 Ok
+```
+
+SHOW
+
+```code
+GET: http://DOMAIN/users/:id
+"http://localhost:3000/users/1"
+```
+
+Response:
+
+```json
+{
+    "id": 1,
+    "cpf": "12345678901",
+    "name": "Vladimir Harkonnen",
+    "password_digest": "$2a$12$4QpARHRIf06/8kVPiPMwtel2xNQ3NpGFWf5bXb7bXIe9Wmp4uWHRe",
+    "created_at": "2020-03-18T00:43:04.074Z",
+    "updated_at": "2020-03-18T00:43:04.074Z"
+}
+```
+
+```code
+status: 200 Ok
+```
+
+##### ACCOUNTS
 
 CREATE
 
 ```code
-POST: http://DOMAIN/users/:user_id/accounts
-"http://localhost:3000/users/1/accounts"
+POST: http://DOMAIN/accounts
+"http://localhost:3000/accounts"
 Param: Body, JSON(application/json)
 ```
 
@@ -168,8 +196,39 @@ Param: Body, JSON(application/json)
 
 Response:
 
+```json
+{
+    "id": 1,
+    "user_id": 1,
+    "created_at": "2020-03-18T00:05:12.547Z",
+    "updated_at": "2020-03-18T00:05:12.547Z"
+}
+```
+
 ```code
-201 Created
+status: 201 Created
+```
+
+SHOW
+
+```code
+GET: http://DOMAIN/accounts/:id
+"http://localhost:3000/accounts/1"
+```
+
+Response:
+
+```json
+{
+    "id": 1,
+    "user_id": 1,
+    "created_at": "2020-03-18T00:05:12.547Z",
+    "updated_at": "2020-03-18T00:05:12.547Z"
+}
+```
+
+```code
+status: 200 Ok
 ```
 
 BALANCE
@@ -182,14 +241,50 @@ Param: Body, JSON(application/json)
 
 ```json
 {
-  "account": "1"
+  "account_id": "1"
 }
 ```
 
 Response:
 
+```json
+450.0
+```
+
 ```code
-200 Ok
+status: 200 Ok
+```
+
+STATEMENT
+
+```code
+GET: http://DOMAIN/statement
+"http://localhost:3000/statement"
+Param: Body, JSON(application/json)
+```
+
+```json
+{
+  "account_id": "1"
+}
+```
+
+Response:
+
+```json
+[
+    {
+        "date": "2020-03-18T00:05:12.584Z",
+        "document": "#1#1",
+        "description": "Initial balance",
+        "kind": "initial_balance",
+        "amount": 0.0
+    }
+]
+```
+
+```code
+status: 200 Ok
 ```
 
 ##### TRANSACTIONS
@@ -197,37 +292,56 @@ Response:
 SHOW
 
 ```code
-GET: http://DOMAIN/users/:user_id/accounts/:account_id/transactions/:id
-"http://localhost:3000/users/1/accounts/1/transactions/1"
+GET: http://DOMAIN/transactions/:id
+"http://localhost:3000/transactions/1"
 ```
 
 Response:
 
-```code
-200 Ok
+```json
+{
+    "date": "2020-03-18T00:05:12.584Z",
+    "document": "#9#9",
+    "description": "Initial balance",
+    "kind": "initial_balance",
+    "amount": 0.0
+}
 ```
 
-CREATE
+```code
+status: 200 Ok
+```
+
+DEPOSIT
 
 ```code
-POST: http://DOMAIN/users/:user_id/accounts/:account_id/transactions
-"http://localhost:3000/users/1/accounts/1/transactions"
+POST: http://DOMAIN/deposit
+"http://localhost:3000/deposit"
 Param: Body, JSON(application/json)
 ```
 
 ```json
 {
-  "user_id": 1,
-  "account_id": 1,
-  "kind": "credit OR debit",
-  "value": 100.0
+  "account_id": "1",
+  "amount": "450"
 }
 ```
 
 Response:
 
+
+```json
+{
+    "date": "2020-03-18T00:15:40.283Z",
+    "document": "#1#2",
+    "description": "Deposit",
+    "kind": "credit",
+    "amount": 450.0
+}
+```
+
 ```code
-201 Created
+status: 201 Created
 ```
 
 TRANSFER
@@ -240,30 +354,33 @@ Param: Body, JSON(application/json)
 
 ```json
 {
-  "user_id": 1,
-  "source_account": 1,
+  "account_id": "1",
   "destination_account": "2",
-  "amount": 100.0
+  "amount": "150"
 }
 ```
 
 Response:
 
-```code
-201 Created
+```json
+Transfer successful
 ```
 
-### PENDING
+```code
+status: 201 Created
+```
+
+### PENDING IDEAS
 
 * Put JSON API format response
-* Separate tests from services and controllers
 * Fix some code smells and other issues reported by Code Climate
 * Add permissions and authorizations
 * Add seeds
 * Improvements:
-  * add deposit function
-  * add bank statement by period
+  * statement by period
   * make rules to permit just owners can make transfer, get balance, etc
+  * add deposit function [X]
+  * add bank statement [X]
 
 ## Contributing
 
