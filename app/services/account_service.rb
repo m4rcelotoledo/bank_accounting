@@ -3,7 +3,10 @@
 class AccountService
   def self.balance_initial(account_id)
     Transaction.create!(
-      account_id: account_id, kind: 'initial_balance', amount: 0
+      account_id: account_id,
+      description: 'Initial balance',
+      kind: 'initial_balance',
+      amount: 0
     )
   end
 
