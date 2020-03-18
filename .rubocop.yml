@@ -1,7 +1,11 @@
-require: rubocop-performance
+require:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
 
-Documentation:
+Style/Documentation:
   Enabled: false
+
 Rails:
   Enabled: true
 
@@ -14,16 +18,34 @@ AllCops:
     - 'script/**/*'
     - 'spec/rails_helper.rb'
     - 'spec/spec_helper.rb'
-    - 'vendor/**/*.rb'
     - 'vendor/**/*'
   UseCache: false
-  TargetRailsVersion: 5.2
-  TargetRubyVersion: 2.6
+  TargetRailsVersion: 6.0
+  TargetRubyVersion: 2.6.5
+
 Metrics/BlockLength:
   ExcludedMethods: ['describe', 'context', 'feature', 'scenario', 'let']
-Style/FrozenStringLiteralComment:
-  Enabled: false
+
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
 Layout/DotPosition:
   EnforcedStyle: trailing
+
+Capybara/FeatureMethods:
+  EnabledMethods: ['feature', 'scenario', 'xscenario','given', 'background']
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false

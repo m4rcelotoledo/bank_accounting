@@ -1,25 +1,27 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   skip_before_action :authenticate, only: :create
 
   # POST /users
   def create
-    @user = User.create!(user_params)
-
-    json_response @user, :created
+    User.create!(user_params).then do |user|
+      json_response user, :created
+    end
   end
 
   # GET /users
   def index
-    @users = User.order(:name).page params[:page]
-
-    json_response(@users)
+    User.order(:name).page(params[:page]).then do |users|
+      json_response users
+    end
   end
 
   # GET /users/:id
   def show
-    @user = User.find(params[:id])
-
-    json_response @user
+    User.find(params[:id]).then do |user|
+      json_response user
+    end
   end
 
   private

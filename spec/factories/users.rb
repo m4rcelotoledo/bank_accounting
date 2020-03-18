@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :user do
     cpf { Faker::IDNumber.brazilian_citizen_number }

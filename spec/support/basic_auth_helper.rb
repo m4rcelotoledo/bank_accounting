@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BasicAuthHelper
   # Basic credentials request
   def basic_credentials(user, pass)

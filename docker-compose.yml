@@ -1,3 +1,6 @@
+# https://github.com/marcelotoledo5000/Dockerfiles
+# https://hub.docker.com/repository/docker/skygvinn/alpine-ruby2.6.5-nodejs
+
 version: '3.6'
 
 services:
@@ -7,7 +10,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
   server:
-    image: skygvinn/debian-ruby2.6-nodejs:v1.0
+    image: skygvinn/alpine-ruby2.6.5-nodejs:v1.3
     container_name: bank_accounting
     ports:
       - "3000:3000"

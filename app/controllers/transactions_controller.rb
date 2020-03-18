@@ -1,29 +1,36 @@
+# frozen_string_literal: true
+
 class TransactionsController < ApplicationController
-  before_action :set_account, only: :create
+  before_action :set_account, only: %i[deposit transfer]
+
   attr_reader :account
 
-  # POST /users/:user_id/accounts/:account_id/transactions
-  def create
-    balance = account.current_balance
-
-    ActiveRecord::Base.transaction do
-      @transaction = Transaction.create!(transaction_params)
-      AccountService.update_balance!(balance, @transaction)
+  # POST /deposit
+  def deposit
+    TransactionService.deposit(
+      transaction_params[:account_id],
+      transaction_params[:amount]
+    ).then do |transaction|
+      render json: transaction,
+             status: :created,
+             serializer: TransactionSerializer
     end
-
-    json_response @transaction, :created
   end
 
-  # GET /users/:user_id/accounts/:account_id/transactions/:id
+  # GET /transactions/:id
   def show
-    @transaction = Transaction.find(params[:id])
-
-    json_response @transaction
+    Transaction.find(params[:id]).then do |transaction|
+      json_response transaction
+    end
   end
 
+  # POST /transfer
   def transfer
-    AccountService.transfer!(params[:source_account],
-                             params[:destination_account], params[:amount])
+    TransactionService.transfer!(
+      params[:account_id],
+      params[:destination_account],
+      params[:amount]
+    )
 
     json_response 'Transfer successful', :created
   end
@@ -31,7 +38,7 @@ class TransactionsController < ApplicationController
   private
 
   def transaction_params
-    params.permit(:account_id, :kind, :value)
+    params.permit(:account_id, :destination_account, :amount)
   end
 
   def set_account
