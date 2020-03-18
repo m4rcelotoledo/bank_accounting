@@ -7,4 +7,5 @@ class User < ApplicationRecord
 
   validates :cpf, presence: true, uniqueness: true
   validates :name, presence: true
+  validates :password, length: { minimum: 8 }
 end

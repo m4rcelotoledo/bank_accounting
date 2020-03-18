@@ -25,6 +25,24 @@ describe 'UsersController', type: :request do
       end
     end
 
+    context 'when the password is less than the minimum required' do
+      let(:invalid_params) do
+        {
+          cpf: cpf,
+          name: name,
+          password: '123456'
+        }
+      end
+
+      before { post users_path, params: invalid_params }
+
+      it 'returns status code 422' do
+        expect(json).not_to be_empty
+        expect(response).to have_http_status :unprocessable_entity
+        expect(response.body).to match(/(minimum is 8 characters)/)
+      end
+    end
+
     context 'when the request is valid' do
       let(:id) { User.find_by(cpf: cpf).id }
 

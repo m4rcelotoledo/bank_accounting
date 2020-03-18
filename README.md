@@ -76,7 +76,7 @@ To see the application in action, starts the rails server to able [http://localh
 
 #### Authentication
 
-* Needs to use Basic Authentication: CPF and Password.
+* Needs to use Basic Authentication: CPF and Password (minimum length: 8).
 
 The format of a WWW-Authenticate header for HTTP basic authentication is:
 
