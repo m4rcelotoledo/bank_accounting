@@ -94,7 +94,7 @@ describe 'AccountsController', type: :request do
 
       before do
         get balance_path,
-            params: { id: account.id },
+            params: { account_id: account.id },
             headers: basic_credentials(user.cpf, user.password)
       end
 
@@ -135,7 +135,7 @@ describe 'AccountsController', type: :request do
       before do
         statement
         get statement_path,
-            params: { id: account.id },
+            params: { account_id: account.id },
             headers: basic_credentials(user.cpf, user.password)
       end
 

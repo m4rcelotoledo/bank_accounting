@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 class AccountsController < ApplicationController
-  before_action :set_account, only: %i[balance show statement]
+  before_action :set_account, only: %i[show]
 
   attr_reader :account
 
   # GET /balance
   def balance
-    account.current_balance.then { |balance| json_response balance }
+    Account.find(account_params[:account_id]).then do |account|
+      account.current_balance.then { |balance| json_response balance }
+    end
   end
 
   # POST /accounts
@@ -25,16 +27,18 @@ class AccountsController < ApplicationController
 
   # GET /statement
   def statement
-    account.transactions.then do |transactions|
-      render json: transactions, status: :ok,
-             each_serializer: TransactionSerializer
+    Account.find(account_params[:account_id]).then do |account|
+      account.transactions.then do |transactions|
+        render json: transactions, status: :ok,
+               each_serializer: TransactionSerializer
+      end
     end
   end
 
   private
 
   def account_params
-    params.permit(:user_id, :account)
+    params.permit(:user_id, :account_id)
   end
 
   def set_account
