@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   get '/balance', to: 'accounts#balance'
   get '/statement', to: 'accounts#statement'
 
-  resources :transactions, only: %i[index show]
+  resources :transactions, only: %i[show]
   post '/deposit', to: 'transactions#deposit'
   post '/transfer', to: 'transactions#transfer'
 end
