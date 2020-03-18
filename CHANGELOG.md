@@ -1,4 +1,11 @@
-# bank_accounting 0.0.7 (Mar 17, 2020)
+# bank_accounting 0.0.8 (Mar 18, 2020)
+
+* Added validation to minimum size to password required
+* Updated simplecov config
+
+  *Marcelo Toledo*
+
+## bank_accounting 0.0.7 (Mar 17, 2020)
 
 * Updated ruby version
 * Updated a lot gems
