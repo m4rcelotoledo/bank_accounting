@@ -375,7 +375,8 @@ status: 201 Created
 * Put JSON API format response
 * Fix some code smells and other issues reported by Code Climate
 * Add permissions and authorizations
-* Add seeds
+* Add seeds [X]
+* Improve seeds
 * Improvements:
   * statement by period
   * make rules to permit just owners can make transfer, get balance, etc
