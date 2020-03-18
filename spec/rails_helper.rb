@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+SimpleCov.start do
+  enable_coverage :branch
+end
+
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 
 require 'database_cleaner'
-require 'simplecov'
-SimpleCov.start
 
 require File.expand_path('../../config/environment', __FILE__)
 
