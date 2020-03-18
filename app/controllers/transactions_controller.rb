@@ -5,7 +5,7 @@ class TransactionsController < ApplicationController
 
   attr_reader :account
 
-  # POST /transactions/deposit
+  # POST /deposit
   def deposit
     TransactionService.deposit(
       transaction_params[:account_id],
@@ -24,7 +24,7 @@ class TransactionsController < ApplicationController
     end
   end
 
-  # POST /transactions/transfer
+  # POST /transfer
   def transfer
     TransactionService.transfer!(
       params[:account_id],
