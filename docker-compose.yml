@@ -1,7 +1,7 @@
 # https://github.com/marcelotoledo5000/Dockerfiles
 # https://hub.docker.com/repository/docker/skygvinn/alpine3-ruby2.7-nodejs
 
-version: '3.6'
+version: '3.8'
 
 services:
   db:
@@ -17,6 +17,7 @@ services:
     environment:
       - BUNDLE_PATH=vendor/bundle
       - BUNDLE_DISABLE_SHARED_GEMS=1
+      - RUBYOPT=-W0
     volumes:
       - .:/var/www/bank_accounting:Z
     working_dir: /var/www/bank_accounting
