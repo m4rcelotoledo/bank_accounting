@@ -14,7 +14,7 @@ Is a Rails application (API-only) to management Users, Accounts, and Transaction
 
 ## Technical Informations and dependencies
 
-* The Ruby language - version 2.6.5
+* The Ruby language - version 2.7.0
 * The Rails gem     - version 6.0.2
 * RSpec Rails       - version 4.0.0.rc1
 * Rubocop           - version 0.80.1
