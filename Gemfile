@@ -8,6 +8,7 @@ ruby '2.7.0'
 gem 'active_model_serializers', '~> 0.10.10'
 gem 'bcrypt', '~> 3.1'
 gem 'bootsnap', '~> 1.4', require: false
+gem 'dotenv-rails', '~> 2.7'
 gem 'kaminari', '~> 1.2'
 gem 'pg', '~> 1.2'
 gem 'puma', '~> 4.3'
@@ -15,6 +16,7 @@ gem 'rack-cors', '~> 1.1'
 gem 'rails', '~> 6.0'
 
 group :development, :test do
+  gem 'codecov', require: false
   gem 'database_cleaner', '~> 1.8'
   gem 'factory_bot_rails', '~> 5.1'
   gem 'faker', '~> 2.10'
