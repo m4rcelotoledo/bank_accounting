@@ -21,7 +21,7 @@ group :development, :test do
   gem 'factory_bot_rails', '~> 5.1'
   gem 'faker', '~> 2.10'
   gem 'pry-byebug', '~> 3.8'
-  gem 'rspec-rails', '~> 4.0.0.rc1'
+  gem 'rspec-rails', '~> 4.0.0'
   gem 'rubocop'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
