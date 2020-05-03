@@ -1,8 +1,6 @@
 # Bank Account
 
-[![Maintainability][codeclimate-badge-maintainability]][codeclimate-maintainability]
-[![Test Coverage][codeclimate-badge-coverage]][codeclimate-coverage]
-[![Build Status][travis-badge]][travis]
+[![codebeat badge][codebeat-badge]][codebeat] [![Maintainability][codeclimate-badge-maintainability]][codeclimate-maintainability] [![Test Coverage][badge-coverage]][coverage] [![Build Status][travis-badge]][travis]
 
 ## About this project
 
@@ -14,9 +12,9 @@ Is a Rails application (API-only) to management Users, Accounts, and Transaction
 
 ## Technical Informations and dependencies
 
-* The Ruby language - version 2.6.5
+* The Ruby language - version 2.7.0
 * The Rails gem     - version 6.0.2
-* RSpec Rails       - version 4.0.0.rc1
+* RSpec Rails       - version 4.0.0
 * Rubocop           - version 0.80.1
 * PostgreSQL        - version 10
 * Docker            - version 19.03.7-ce
@@ -387,11 +385,14 @@ status: 201 Created
 Bank Account is open source, and we are grateful for
 [everyone][contributors] who have contributed so far or want to start.
 
+[codebeat-badge]: https://codebeat.co/badges/679fbc60-4281-4c31-9dd6-f52af0456897
+[codebeat]: https://codebeat.co/projects/github-com-marcelotoledo5000-bank_accounting-master
+
 [codeclimate-badge-maintainability]: https://api.codeclimate.com/v1/badges/e3c3f8ebb8aa2d5e4740/maintainability
 [codeclimate-maintainability]: https://codeclimate.com/github/marcelotoledo5000/bank_accounting/maintainability
 
-[codeclimate-badge-coverage]: https://api.codeclimate.com/v1/badges/e3c3f8ebb8aa2d5e4740/test_coverage
-[codeclimate-coverage]: https://codeclimate.com/github/marcelotoledo5000/bank_accounting/test_coverage
+[badge-coverage]: https://codecov.io/gh/marcelotoledo5000/bank_accounting/branch/master/graph/badge.svg
+[coverage]: https://codecov.io/gh/marcelotoledo5000/bank_accounting
 
 [travis-badge]: https://travis-ci.com/marcelotoledo5000/bank_accounting.svg?branch=master
 [travis]: https://travis-ci.com/marcelotoledo5000/bank_accounting

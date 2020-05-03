@@ -1,4 +1,14 @@
-# bank_accounting 0.0.8 (Mar 18, 2020)
+# bank_accounting 0.0.9 (Mai 03, 2020)
+
+* Updated Ruby version
+* Added `codecov` and `dotenv-rails` gems
+* Updated some gems
+* Added some badges to README.md
+* Security updates
+
+  *Marcelo Toledo*
+
+## bank_accounting 0.0.8 (Mar 18, 2020)
 
 * Added validation to minimum size to password required
 * Updated simplecov config
