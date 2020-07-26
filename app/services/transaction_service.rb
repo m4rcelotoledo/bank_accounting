@@ -14,9 +14,7 @@ class TransactionService
     ActiveRecord::Base.transaction do
       valid_account?(destination)
 
-      unless AccountService.sufficient_funds?(source, amount)
-        raise InsufficientFunds, 'Transaction canceled'
-      end
+      raise InsufficientFunds, 'Transaction canceled' unless AccountService.sufficient_funds?(source, amount)
 
       transfer_to(source, amount, destination)
       transfer_from(destination, amount, source)

@@ -3,31 +3,52 @@ require:
   - rubocop-rails
   - rubocop-rspec
 
-Style/Documentation:
-  Enabled: false
-
-Rails:
-  Enabled: true
-
 AllCops:
   Exclude:
     - 'db/**/*'
     - 'Rakefile'
     - 'config/**/*'
     - 'bin/**/*'
-    - 'script/**/*'
-    - 'spec/rails_helper.rb'
-    - 'spec/spec_helper.rb'
     - 'vendor/**/*'
   UseCache: false
   TargetRailsVersion: 6.0
   TargetRubyVersion: 2.7.0
 
+Capybara/FeatureMethods:
+  EnabledMethods: ['feature', 'scenario', 'xscenario','given', 'background']
+
+Layout/DotPosition:
+  EnforcedStyle: trailing
+
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
 Metrics/BlockLength:
   ExcludedMethods: ['describe', 'context', 'feature', 'scenario', 'let']
 
+Rails:
+  Enabled: true
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
+
+Style/Documentation:
+  Enabled: false
+
+Style/ExponentialNotation:
+  Enabled: true
 
 Style/HashEachMethods:
   Enabled: true
@@ -37,15 +58,3 @@ Style/HashTransformKeys:
 
 Style/HashTransformValues:
   Enabled: true
-
-Layout/DotPosition:
-  EnforcedStyle: trailing
-
-Capybara/FeatureMethods:
-  EnabledMethods: ['feature', 'scenario', 'xscenario','given', 'background']
-
-RSpec/ExampleLength:
-  Enabled: false
-
-RSpec/MultipleExpectations:
-  Enabled: false
