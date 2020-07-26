@@ -1,4 +1,16 @@
-# bank_accounting 0.0.9 (Mai 03, 2020)
+# bank_accounting 0.0.10 (Jul 26, 2020)
+
+* Security updates
+* Update a lot of gems
+* Update Rubocop
+* Bump rack from 2.2.2 to 2.2.3
+* Bump websocket-extensions from 0.1.4 to 0.1.5
+* Bump kaminari from 1.2.0 to 1.2.1
+* Bump puma from 4.3.3 to 4.3.5
+
+  *Marcelo Toledo*
+
+## bank_accounting 0.0.9 (Mai 03, 2020)
 
 * Updated Ruby version
 * Added `codecov` and `dotenv-rails` gems
