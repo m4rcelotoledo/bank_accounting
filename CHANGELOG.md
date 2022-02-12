@@ -1,4 +1,14 @@
-# bank_accounting 0.0.10 (Jul 26, 2020)
+# bank_accounting 0.0.11 (Feb 12, 2022)
+
+* Security updates
+* Bump a lot of gems
+* Remove travis-ci
+* Remove CodeClimate
+* Add GitHub Actions
+
+  *Marcelo Toledo*
+
+## bank_accounting 0.0.10 (Jul 26, 2020)
 
 * Security updates
 * Update a lot of gems
