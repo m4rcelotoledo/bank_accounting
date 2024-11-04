@@ -1,6 +1,6 @@
 # Bank Account
 
-[![codebeat badge][codebeat-badge]][codebeat] [![Maintainability][codeclimate-badge-maintainability]][codeclimate-maintainability] [![Test Coverage][badge-coverage]][coverage] [![Build Status][travis-badge]][travis]
+[![codebeat badge][codebeat-badge]][codebeat] [![Test Coverage][badge-coverage]][coverage]
 
 ## About this project
 
@@ -388,11 +388,5 @@ Bank Account is open source, and we are grateful for
 [codebeat-badge]: https://codebeat.co/badges/679fbc60-4281-4c31-9dd6-f52af0456897
 [codebeat]: https://codebeat.co/projects/github-com-marcelotoledo5000-bank_accounting-master
 
-[codeclimate-badge-maintainability]: https://api.codeclimate.com/v1/badges/e3c3f8ebb8aa2d5e4740/maintainability
-[codeclimate-maintainability]: https://codeclimate.com/github/marcelotoledo5000/bank_accounting/maintainability
-
 [badge-coverage]: https://codecov.io/gh/marcelotoledo5000/bank_accounting/branch/master/graph/badge.svg
 [coverage]: https://codecov.io/gh/marcelotoledo5000/bank_accounting
-
-[travis-badge]: https://travis-ci.com/marcelotoledo5000/bank_accounting.svg?branch=master
-[travis]: https://travis-ci.com/marcelotoledo5000/bank_accounting
