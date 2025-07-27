@@ -16,6 +16,7 @@ gem 'rack-cors'
 gem 'rails'
 
 group :development, :test do
+  gem 'bundle-audit'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'faker'
