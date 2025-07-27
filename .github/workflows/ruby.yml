@@ -1,60 +1,98 @@
-name: Ruby
+name: Ruby CI/CD
 
 on:
   pull_request:
-
+    branches: [ master, main ]
   push:
-    branches:
-      - master
+    branches: [ master, main ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     services:
       postgres:
-        image: postgres:11.5
+        image: postgres:15
         env:
           POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: bank_accounting_test
         ports: ["5432:5432"]
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-    - name: Set up Ruby version specified in `.ruby-version`
-      uses: eregon/use-ruby-action@master
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4.5'
+        bundler-cache: true
 
     - name: Install PostgreSQL client
+      run: sudo apt-get update && sudo apt-get install -y libpq-dev
+
+    - name: Setup test database
+      env:
+        RAILS_ENV: test
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/bank_accounting_test
       run: |
-        sudo apt-get -yqq install libpq-dev
+        cp config/database.yml config/database.yml.backup
+        cat > config/database.yml << EOF
+        test:
+          adapter: postgresql
+          encoding: unicode
+          pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+          host: localhost
+          username: postgres
+          password: postgres
+          database: bank_accounting_test
+        EOF
 
-    - name: Setup cache key and directory for gems cache
-      uses: actions/cache@v1
-      with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gem-use-ruby-${{ hashFiles('**/Gemfile.lock') }}
-
-    - name: Install dependencies
-      run:  bundle install --jobs 4 --retry 3
-
-    - name: Run migrations
+    - name: Setup database
       env:
         RAILS_ENV: test
-        RUBYOPT: -W0
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/bank_accounting_test
       run: |
-        cp config/database.yml.github config/database.yml
-        bundle exec rails db:reset db:setup db:migrate
+        bundle exec rails db:create db:schema:load
 
-    - name: Run Rubocop
+    - name: Run RuboCop
+      run: bundle exec rubocop --parallel
+
+    - name: Run Brakeman security check
+      run: bundle exec brakeman --no-progress --quiet
+
+    - name: Run tests
       env:
         RAILS_ENV: test
-        RUBYOPT: -W0
-      run: bundle exec rubocop --config .rubocop.yml
-
-    - name: Run tests with RSpec
-      env:
-        RAILS_ENV: test
-        RUBYOPT: -W0
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/bank_accounting_test
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      run: bundle exec rspec
+      run: bundle exec rspec --format progress
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: false
+
+  security:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4.5'
+        bundler-cache: true
+
+    - name: Run bundle audit
+      run: bundle exec bundle-audit check --update
