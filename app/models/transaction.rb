@@ -5,5 +5,5 @@ class Transaction < ApplicationRecord
 
   validates :kind, :amount, presence: true
 
-  enum kind: { initial_balance: 0, debit: 1, credit: 2 }
+  enum :kind, { initial_balance: 0, debit: 1, credit: 2 }
 end
