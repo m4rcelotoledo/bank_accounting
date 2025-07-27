@@ -21,7 +21,8 @@ Bundler.require(*Rails.groups)
 
 module BankAccounting
   class Application < Rails::Application
-    config.load_defaults 5.2
+    config.load_defaults 8.0
     config.api_only = true
+    config.active_support.to_time_preserves_timezone = :zone
   end
 end
