@@ -12,17 +12,17 @@ class AccountsController < ApplicationController
     end
   end
 
+  # GET /accounts/:id
+  def show
+    json_response @account
+  end
+
   # POST /accounts
   def create
     Account.create!(account_params).then do |account|
       AccountService.balance_initial account.id
       json_response account, :created
     end
-  end
-
-  # GET /accounts/:id
-  def show
-    json_response @account
   end
 
   # GET /statement
