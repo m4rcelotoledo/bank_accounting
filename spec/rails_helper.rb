@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 require 'simplecov'
-require 'codecov'
 
-SimpleCov.start do
+SimpleCov.start 'rails' do
   enable_coverage :branch
 
   minimum_coverage 100
@@ -11,24 +10,20 @@ SimpleCov.start do
   maximum_coverage_drop 2
 
   SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(
-    [
-      SimpleCov::Formatter::HTMLFormatter,
-      SimpleCov::Formatter::Codecov
-    ]
+    [SimpleCov::Formatter::HTMLFormatter]
   )
 end
 
-require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
-
-require 'database_cleaner'
 
 require File.expand_path('../config/environment', __dir__)
 
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
+require 'database_cleaner'
+require 'spec_helper'
 
-Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |f| require f }
+Rails.root.glob('spec/support/**/*.rb').each { |f| require f }
 
 begin
   ActiveRecord::Migration.maintain_test_schema!
@@ -45,7 +40,7 @@ Shoulda::Matchers.configure do |config|
 end
 
 RSpec.configure do |config|
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.use_active_record = true
   config.use_transactional_fixtures = true
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!

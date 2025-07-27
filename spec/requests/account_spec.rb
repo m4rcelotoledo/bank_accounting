@@ -46,6 +46,8 @@ describe 'AccountsController', type: :request do
 
       it 'returns status code 401' do
         expect(response).to have_http_status :unauthorized
+        expect(json[:errors].first[:status]).to eq '401'
+        expect(json[:errors].first[:title]).to eq 'Unauthorized'
       end
     end
   end
@@ -79,10 +81,12 @@ describe 'AccountsController', type: :request do
 
       it 'returns status code 404' do
         expect(response).to have_http_status :not_found
+        expect(json[:errors].first[:status]).to eq '404'
+        expect(json[:errors].first[:title]).to eq 'Not Found'
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find Account/)
+        expect(json[:errors].first[:detail]).to match(/Couldn't find Account/)
       end
     end
   end
@@ -100,7 +104,7 @@ describe 'AccountsController', type: :request do
 
       it do
         expect(response).to have_http_status :ok
-        expect(json).to eq 0.0
+        expect(json[:balance]).to eq 0.0
       end
     end
   end

@@ -12,6 +12,8 @@ describe 'TransactionsController', type: :request do
 
       it 'returns status code 401' do
         expect(response).to have_http_status :unauthorized
+        expect(json[:errors].first[:status]).to eq '401'
+        expect(json[:errors].first[:title]).to eq 'Unauthorized'
       end
     end
 
@@ -28,7 +30,8 @@ describe 'TransactionsController', type: :request do
 
       it 'returns status code 422' do
         expect(response).to have_http_status :unprocessable_entity
-        expect(json).not_to be_empty
+        expect(json[:errors].first[:status]).to eq '422'
+        expect(json[:errors].first[:title]).to eq 'Unprocessable Entity'
       end
     end
 
@@ -109,6 +112,8 @@ describe 'TransactionsController', type: :request do
 
       it 'returns status code 401' do
         expect(response).to have_http_status :unauthorized
+        expect(json[:errors].first[:status]).to eq '401'
+        expect(json[:errors].first[:title]).to eq 'Unauthorized'
       end
     end
 
@@ -134,6 +139,8 @@ describe 'TransactionsController', type: :request do
 
       it 'returns the account is not found' do
         expect(response).to have_http_status :not_found
+        expect(json[:errors].first[:status]).to eq '404'
+        expect(json[:errors].first[:title]).to eq 'Not Found'
       end
     end
 
@@ -157,6 +164,8 @@ describe 'TransactionsController', type: :request do
 
       it 'returns the account is not found' do
         expect(response).to have_http_status :not_found
+        expect(json[:errors].first[:status]).to eq '404'
+        expect(json[:errors].first[:title]).to eq 'Not Found'
       end
     end
 
@@ -185,8 +194,11 @@ describe 'TransactionsController', type: :request do
       end
 
       it 'transaction is canceled' do
-        expect { post_transfer }.
-          to raise_exception InsufficientFunds, 'Transaction canceled'
+        post_transfer
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to eq 'Transaction canceled'
+        expect(json[:errors].first[:status]).to eq '422'
+        expect(json[:errors].first[:title]).to eq 'Insufficient Funds'
         source_account.reload
         destination_account.reload
         expect(source_account.current_balance).to eq 0
@@ -225,7 +237,7 @@ describe 'TransactionsController', type: :request do
         source_account.reload
         destination_account.reload
         expect(response).to have_http_status :created
-        expect(response.body).to eq 'Transfer successful'
+        expect(json[:message]).to eq 'Transfer successful'
         expect(formatted_currency(source_account.current_balance)).
           to eq formatted_currency(500 - amount.to_f)
         expect(source_account.transactions.last.kind).to eq 'debit'
@@ -250,6 +262,8 @@ describe 'TransactionsController', type: :request do
 
       it 'returns status code 401' do
         expect(response).to have_http_status :unauthorized
+        expect(json[:errors].first[:status]).to eq '401'
+        expect(json[:errors].first[:title]).to eq 'Unauthorized'
       end
     end
 
@@ -264,7 +278,8 @@ describe 'TransactionsController', type: :request do
 
       it 'returns status code 404' do
         expect(response).to have_http_status :not_found
-        expect(json).not_to be_empty
+        expect(json[:errors].first[:status]).to eq '404'
+        expect(json[:errors].first[:title]).to eq 'Not Found'
       end
     end
 
@@ -280,7 +295,8 @@ describe 'TransactionsController', type: :request do
 
       it 'returns status code 404' do
         expect(response).to have_http_status :not_found
-        expect(json).not_to be_empty
+        expect(json[:errors].first[:status]).to eq '404'
+        expect(json[:errors].first[:title]).to eq 'Not Found'
       end
     end
 

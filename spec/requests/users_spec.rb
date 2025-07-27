@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe 'UsersController', type: :request do
   describe 'POST /users' do
-    let(:cpf) { Faker::IDNumber.brazilian_citizen_number }
+    let(:cpf) { Faker::IdNumber.brazilian_citizen_number }
     let(:name) { Faker::Books::Dune.character }
     let(:password) { Faker::Internet.password }
     let(:invalid_params) { { cpf: cpf } }
@@ -20,7 +20,8 @@ describe 'UsersController', type: :request do
       before { post users_path, params: invalid_params }
 
       it 'returns status code 422' do
-        expect(json).not_to be_empty
+        expect(json[:errors].first[:status]).to eq '422'
+        expect(json[:errors].first[:title]).to eq 'Unprocessable Entity'
         expect(response).to have_http_status :unprocessable_entity
       end
     end
@@ -37,7 +38,8 @@ describe 'UsersController', type: :request do
       before { post users_path, params: invalid_params }
 
       it 'returns status code 422' do
-        expect(json).not_to be_empty
+        expect(json[:errors].first[:status]).to eq '422'
+        expect(json[:errors].first[:title]).to eq 'Unprocessable Entity'
         expect(response).to have_http_status :unprocessable_entity
         expect(response.body).to match(/(minimum is 8 characters)/)
       end
@@ -67,6 +69,8 @@ describe 'UsersController', type: :request do
 
       it 'returns status code 401' do
         expect(response).to have_http_status :unauthorized
+        expect(json[:errors].first[:status]).to eq '401'
+        expect(json[:errors].first[:title]).to eq 'Unauthorized'
       end
     end
 
@@ -99,10 +103,12 @@ describe 'UsersController', type: :request do
 
       it 'returns status code 404' do
         expect(response).to have_http_status :not_found
+        expect(json[:errors].first[:status]).to eq '404'
+        expect(json[:errors].first[:title]).to eq 'Not Found'
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find User/)
+        expect(json[:errors].first[:detail]).to match(/Couldn't find User/)
       end
     end
 
