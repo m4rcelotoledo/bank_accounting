@@ -16,6 +16,14 @@ class ApplicationController < ActionController::API
       @current_user = User.find_by(cpf: user).try(:authenticate, pass)
     end
 
-    head :unauthorized
+    render json: {
+      errors: [
+        {
+          status: '401',
+          title: 'Unauthorized',
+          detail: 'Invalid credentials'
+        }
+      ]
+    }, status: :unauthorized
   end
 end
