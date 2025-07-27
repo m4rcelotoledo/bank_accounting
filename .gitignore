@@ -33,3 +33,6 @@ coverage
 *.development
 *.test
 .env
+
+# local
+.tool-versions
