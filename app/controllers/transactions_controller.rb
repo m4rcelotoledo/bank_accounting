@@ -32,7 +32,7 @@ class TransactionsController < ApplicationController
       params[:amount]
     )
 
-    json_response 'Transfer successful', :created
+    render json: { message: 'Transfer successful' }, status: :created
   end
 
   private

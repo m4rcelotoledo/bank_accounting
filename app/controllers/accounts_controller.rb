@@ -8,7 +8,7 @@ class AccountsController < ApplicationController
   # GET /balance
   def balance
     Account.find(account_params[:account_id]).then do |account|
-      account.current_balance.then { |balance| json_response balance }
+      account.current_balance.then { |balance| json_response({ balance: balance }) }
     end
   end
 
