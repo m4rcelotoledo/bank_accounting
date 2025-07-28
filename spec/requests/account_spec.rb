@@ -13,7 +13,7 @@ describe 'AccountsController', type: :request do
       before do
         post accounts_path,
              params: valid_params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'creates an account' do
@@ -28,7 +28,7 @@ describe 'AccountsController', type: :request do
     context 'when the request is invalid' do
       before do
         post accounts_path,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'returns status code 422' do
@@ -43,7 +43,7 @@ describe 'AccountsController', type: :request do
       before do
         post accounts_path,
              params: invalid_params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'returns status code 422' do
@@ -56,7 +56,7 @@ describe 'AccountsController', type: :request do
       before do
         post accounts_path,
              params: valid_params,
-             headers: basic_credentials('user@email.com', '00000000')
+             headers: { 'HTTP_AUTHORIZATION' => 'Bearer invalid_token' }
       end
 
       it 'returns status code 401' do
@@ -75,7 +75,7 @@ describe 'AccountsController', type: :request do
 
         post accounts_path,
              params: { account: { user_id: user.id } },
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'returns status code 422' do
@@ -93,7 +93,7 @@ describe 'AccountsController', type: :request do
 
       before do
         get account_path(account.id),
-            headers: basic_credentials(user.cpf, user.password)
+            headers: jwt_credentials(user)
       end
 
       it 'returns the account' do
@@ -109,7 +109,7 @@ describe 'AccountsController', type: :request do
     context 'when the record does not exist' do
       before do
         get account_path(100),
-            headers: basic_credentials(user.cpf, user.password)
+            headers: jwt_credentials(user)
       end
 
       it 'returns status code 404' do
@@ -128,7 +128,7 @@ describe 'AccountsController', type: :request do
 
       before do
         get account_path(account.id),
-            headers: basic_credentials('user@email.com', '00000000')
+            headers: { 'HTTP_AUTHORIZATION' => 'Bearer invalid_token' }
       end
 
       it 'returns status code 401' do
@@ -147,7 +147,7 @@ describe 'AccountsController', type: :request do
       before do
         get balance_path,
             params: { account: { account_id: account.id } },
-            headers: basic_credentials(user.cpf, user.password)
+            headers: jwt_credentials(user)
       end
 
       it do
@@ -162,7 +162,7 @@ describe 'AccountsController', type: :request do
       before do
         get balance_path,
             params: { account: { account_id: 999 } },
-            headers: basic_credentials(user.cpf, user.password)
+            headers: jwt_credentials(user)
       end
 
       it 'returns status code 404' do
@@ -177,7 +177,7 @@ describe 'AccountsController', type: :request do
 
       before do
         get balance_path,
-            headers: basic_credentials(user.cpf, user.password)
+            headers: jwt_credentials(user)
       end
 
       it 'returns status code 422' do
@@ -193,7 +193,7 @@ describe 'AccountsController', type: :request do
       before do
         get balance_path,
             params: { account: { account_id: account.id } },
-            headers: basic_credentials('user@email.com', '00000000')
+            headers: { 'HTTP_AUTHORIZATION' => 'Bearer invalid_token' }
       end
 
       it 'returns status code 401' do
@@ -235,7 +235,7 @@ describe 'AccountsController', type: :request do
         statement
         get statement_path,
             params: { account: { account_id: account.id } },
-            headers: basic_credentials(user.cpf, user.password)
+            headers: jwt_credentials(user)
       end
 
       it { expect(response.body).to eq statement.to_json }
@@ -248,7 +248,7 @@ describe 'AccountsController', type: :request do
       before do
         get statement_path,
             params: { account: { account_id: 999 } },
-            headers: basic_credentials(user.cpf, user.password)
+            headers: jwt_credentials(user)
       end
 
       it 'returns status code 404' do
@@ -264,7 +264,7 @@ describe 'AccountsController', type: :request do
       before do
         get statement_path,
             params: { account: {} },
-            headers: basic_credentials(user.cpf, user.password)
+            headers: jwt_credentials(user)
       end
 
       it 'returns status code 422' do
@@ -280,7 +280,7 @@ describe 'AccountsController', type: :request do
       before do
         get statement_path,
             params: { account: { account_id: account.id } },
-            headers: basic_credentials('user@email.com', '00000000')
+            headers: { 'HTTP_AUTHORIZATION' => 'Bearer invalid_token' }
       end
 
       it 'returns status code 401' do

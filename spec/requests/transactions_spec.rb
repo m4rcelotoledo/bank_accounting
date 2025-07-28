@@ -7,7 +7,7 @@ describe 'TransactionsController', type: :request do
     context 'when the user is unauthorized' do
       before do
         post deposit_path,
-             headers: basic_credentials('user@email.com', '00000000')
+             headers: { 'HTTP_AUTHORIZATION' => 'Bearer invalid_token' }
       end
 
       it 'returns status code 401' do
@@ -24,7 +24,7 @@ describe 'TransactionsController', type: :request do
       before do
         post deposit_path,
              params: params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'returns status code 422' do
@@ -41,7 +41,7 @@ describe 'TransactionsController', type: :request do
       before do
         post deposit_path,
              params: invalid_params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'returns status code 422' do
@@ -65,7 +65,7 @@ describe 'TransactionsController', type: :request do
           before do
             post deposit_path,
                  params: params,
-                 headers: basic_credentials(user.cpf, user.password)
+                 headers: jwt_credentials(user)
           end
 
           it 'returns status code 422' do
@@ -83,7 +83,7 @@ describe 'TransactionsController', type: :request do
       before do
         post deposit_path,
              params: params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'returns status code 404' do
@@ -112,7 +112,7 @@ describe 'TransactionsController', type: :request do
       before do
         post deposit_path,
              params: valid_params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'creates a transaction' do
@@ -150,7 +150,7 @@ describe 'TransactionsController', type: :request do
         new_transaction
         post deposit_path,
              params: valid_params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'balance is updated' do
@@ -168,7 +168,7 @@ describe 'TransactionsController', type: :request do
     context 'when the user is unauthorized' do
       before do
         post transfer_path,
-             headers: basic_credentials('user@email.com', '00000000')
+             headers: { 'HTTP_AUTHORIZATION' => 'Bearer invalid_token' }
       end
 
       it 'returns status code 401' do
@@ -185,7 +185,7 @@ describe 'TransactionsController', type: :request do
       before do
         post transfer_path,
              params: params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'returns status code 422' do
@@ -213,7 +213,7 @@ describe 'TransactionsController', type: :request do
       before do
         post transfer_path,
              params: invalid_params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'returns the account is not found' do
@@ -240,7 +240,7 @@ describe 'TransactionsController', type: :request do
       before do
         post transfer_path,
              params: invalid_params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'returns the account is not found' do
@@ -267,7 +267,7 @@ describe 'TransactionsController', type: :request do
       before do
         post transfer_path,
              params: params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'returns unprocessable entity error' do
@@ -299,7 +299,7 @@ describe 'TransactionsController', type: :request do
           before do
             post transfer_path,
                  params: params,
-                 headers: basic_credentials(user.cpf, user.password)
+                 headers: jwt_credentials(user)
           end
 
           it 'returns unprocessable entity error' do
@@ -314,7 +314,7 @@ describe 'TransactionsController', type: :request do
       subject(:post_transfer) do
         post transfer_path,
              params: valid_params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       let(:user) { create(:user) }
@@ -375,7 +375,7 @@ describe 'TransactionsController', type: :request do
         transaction.save!
         post transfer_path,
              params: valid_params,
-             headers: basic_credentials(user.cpf, user.password)
+             headers: jwt_credentials(user)
       end
 
       it 'transfer is successful' do
@@ -402,7 +402,7 @@ describe 'TransactionsController', type: :request do
 
       before do
         get transaction_path(id),
-            headers: basic_credentials('user@email.com', '00000000')
+            headers: { 'HTTP_AUTHORIZATION' => 'Bearer invalid_token' }
       end
 
       it 'returns status code 401' do
@@ -418,7 +418,7 @@ describe 'TransactionsController', type: :request do
       before do
         get transaction_path(500),
             params: { account_id: 42 },
-            headers: basic_credentials(user.cpf, user.password)
+            headers: jwt_credentials(user)
       end
 
       it 'returns status code 404' do
@@ -435,7 +435,7 @@ describe 'TransactionsController', type: :request do
       before do
         get transaction_path(500),
             params: { account_id: account.id },
-            headers: basic_credentials(user.cpf, user.password)
+            headers: jwt_credentials(user)
       end
 
       it 'returns status code 404' do
@@ -456,7 +456,7 @@ describe 'TransactionsController', type: :request do
       before do
         get transaction_path(id),
             params: { account_id: account.id },
-            headers: basic_credentials(user.cpf, user.password)
+            headers: jwt_credentials(user)
       end
 
       it 'returns the transaction' do
