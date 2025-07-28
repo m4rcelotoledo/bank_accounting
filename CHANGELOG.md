@@ -1,3 +1,69 @@
+# bank_accounting 0.0.12 (Jul 28, 2025)
+
+## 🚀 Major Improvements
+
+### Code Quality & Standards
+* **100% Test Coverage** - Achieved complete line coverage (193/193 lines)
+* **RuboCop Compliance** - Fixed all style violations and naming conventions
+* **Code Refactoring** - Improved method naming with predicate methods (ending with `?`)
+* **Test Optimization** - Removed 5 duplicate test scenarios while maintaining coverage
+* **Documentation** - Translated all comments to English for international standards
+
+### Architecture Enhancements
+* **Validation Centralization** - Improved `Validations` concern with proper predicate methods
+* **Error Handling** - Enhanced `ExceptionHandler` concern for better error management
+* **Controller Cleanup** - Refactored controllers for better separation of concerns
+* **Service Layer** - Maintained clean service architecture for business logic
+
+### Security & Performance
+* **Security Headers** - Implemented proper HTTP security headers
+* **Input Validation** - Enhanced parameter validation across all endpoints
+* **Error Responses** - Standardized error response format
+* **Database Optimization** - Improved query performance and transaction handling
+
+### Documentation & Developer Experience
+* **README Overhaul** - Complete redesign with professional structure and comprehensive documentation
+* **API Documentation** - Enhanced endpoint documentation with examples
+* **Development Guidelines** - Added clear contribution guidelines and code standards
+* **Tech Stack Updates** - Updated all dependency versions to latest stable releases
+* **Makefile Integration** - Replaced shell scripts with comprehensive Makefile for better cross-platform compatibility
+
+### Testing & Quality Assurance
+* **Test Consolidation** - Removed duplicate test scenarios for better maintainability
+* **Coverage Monitoring** - Maintained strict 100% line coverage requirement
+* **Test Organization** - Improved test structure and readability
+* **CI/CD Integration** - Enhanced GitHub Actions workflow
+
+### Dependencies & Infrastructure
+* **Ruby 3.4.5** - Updated to latest stable Ruby version
+* **Rails 8.0.2** - Upgraded to Rails 8 with all security patches
+* **PostgreSQL 15** - Updated database to latest version
+* **Docker 24.0.0** - Updated containerization tools
+* **Security Tools** - Integrated Brakeman and Bundle Audit for security scanning
+
+## 🔧 Technical Details
+
+### Fixed Issues
+* Resolved RuboCop `Naming/PredicateMethod` violations
+* Fixed method naming conventions in controllers
+* Removed duplicate test scenarios
+* Standardized error handling across the application
+* Improved code organization and maintainability
+
+### New Features
+* Enhanced API documentation with comprehensive examples
+* Improved error response format
+* Better validation error messages
+* Professional README with badges and architecture diagrams
+* Comprehensive Makefile replacing shell scripts for better developer experience
+
+### Breaking Changes
+* None - All changes are backward compatible
+
+*Marcelo Toledo*
+
+---
+
 # bank_accounting 0.0.11 (Feb 12, 2022)
 
 * Security updates
