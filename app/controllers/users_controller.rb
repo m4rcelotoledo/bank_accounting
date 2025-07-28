@@ -3,13 +3,6 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate, only: :create
 
-  # POST /users
-  def create
-    User.create!(user_params).then do |user|
-      json_response user, :created
-    end
-  end
-
   # GET /users
   def index
     User.includes(:account).order(:name).page(params[:page]).then do |users|
@@ -21,6 +14,13 @@ class UsersController < ApplicationController
   def show
     User.includes(:account).find(params[:id]).then do |user|
       json_response user
+    end
+  end
+
+  # POST /users
+  def create
+    User.create!(user_params).then do |user|
+      json_response user, :created
     end
   end
 
