@@ -11,7 +11,9 @@ class AccountService
   end
 
   def self.sufficient_funds?(account_id, amount)
-    Account.find_by(id: account_id).then do |account|
+    Account.includes(:transactions).find_by(id: account_id).then do |account|
+      return false unless account
+
       account.current_balance.then do |balance|
         balance.positive? && balance >= amount.to_f
       end
