@@ -19,7 +19,7 @@ describe 'TransactionsController', type: :request do
 
     context 'when required parameters are missing' do
       let(:user) { create(:user) }
-      let(:params) { { account_id: 1 } } # missing amount
+      let(:params) { { transaction: { account_id: 1 } } } # missing amount
 
       before do
         post deposit_path,
@@ -36,7 +36,7 @@ describe 'TransactionsController', type: :request do
     context 'when the request is invalid' do
       let(:user) { create(:user) }
       let(:account) { create(:account_with_transaction, user: user) }
-      let(:invalid_params) { { account_id: account.id } }
+      let(:invalid_params) { { transaction: { account_id: account.id } } }
 
       before do
         post deposit_path,
@@ -60,7 +60,7 @@ describe 'TransactionsController', type: :request do
         { amount: -100, description: 'negative' }
       ].each do |test_case|
         context "when amount is #{test_case[:description]}" do
-          let(:params) { { account_id: account.id, amount: test_case[:amount] } }
+          let(:params) { { transaction: { account_id: account.id, amount: test_case[:amount] } } }
 
           before do
             post deposit_path,
@@ -78,7 +78,7 @@ describe 'TransactionsController', type: :request do
 
     context 'when the account is not found' do
       let(:user) { create(:user) }
-      let(:params) { { account_id: 999, amount: 100 } }
+      let(:params) { { transaction: { account_id: 999, amount: 100 } } }
 
       before do
         post deposit_path,
@@ -102,8 +102,10 @@ describe 'TransactionsController', type: :request do
 
       let(:valid_params) do
         {
-          account_id: account.id,
-          amount: amount
+          transaction: {
+            account_id: account.id,
+            amount: amount
+          }
         }
       end
 
@@ -137,8 +139,10 @@ describe 'TransactionsController', type: :request do
 
       let(:valid_params) do
         {
-          account_id: account.id,
-          amount: amount
+          transaction: {
+            account_id: account.id,
+            amount: amount
+          }
         }
       end
 
@@ -176,7 +180,7 @@ describe 'TransactionsController', type: :request do
 
     context 'when required parameters are missing' do
       let(:user) { create(:user) }
-      let(:params) { { account_id: 1 } } # missing destination_account and amount
+      let(:params) { { transaction: { account_id: 1 } } } # missing destination_account and amount
 
       before do
         post transfer_path,
@@ -198,9 +202,11 @@ describe 'TransactionsController', type: :request do
       let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:invalid_params) do
         {
-          account_id: 9999,
-          destination_account: destination_account.id,
-          amount: amount
+          transaction: {
+            account_id: 9999,
+            destination_account: destination_account.id,
+            amount: amount
+          }
         }
       end
 
@@ -223,9 +229,11 @@ describe 'TransactionsController', type: :request do
       let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:invalid_params) do
         {
-          account_id: source_account.id,
-          destination_account: 9999,
-          amount: amount
+          transaction: {
+            account_id: source_account.id,
+            destination_account: 9999,
+            amount: amount
+          }
         }
       end
 
@@ -248,9 +256,11 @@ describe 'TransactionsController', type: :request do
       let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:params) do
         {
-          account_id: account.id,
-          destination_account: account.id,
-          amount: amount
+          transaction: {
+            account_id: account.id,
+            destination_account: account.id,
+            amount: amount
+          }
         }
       end
 
@@ -278,9 +288,11 @@ describe 'TransactionsController', type: :request do
         context "when amount is #{test_case[:description]}" do
           let(:params) do
             {
-              account_id: source_account.id,
-              destination_account: destination_account.id,
-              amount: test_case[:amount]
+              transaction: {
+                account_id: source_account.id,
+                destination_account: destination_account.id,
+                amount: test_case[:amount]
+              }
             }
           end
 
@@ -316,9 +328,11 @@ describe 'TransactionsController', type: :request do
       let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:valid_params) do
         {
-          account_id: source_account.id,
-          destination_account: destination_account.id,
-          amount: amount
+          transaction: {
+            account_id: source_account.id,
+            destination_account: destination_account.id,
+            amount: amount
+          }
         }
       end
 
@@ -347,9 +361,11 @@ describe 'TransactionsController', type: :request do
       let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
       let(:valid_params) do
         {
-          account_id: source_account.id,
-          destination_account: destination_account.id,
-          amount: amount
+          transaction: {
+            account_id: source_account.id,
+            destination_account: destination_account.id,
+            amount: amount
+          }
         }
       end
 

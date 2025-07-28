@@ -5,7 +5,7 @@ require 'rails_helper'
 describe 'AccountsController', type: :request do
   describe 'POST /accounts' do
     let(:user) { create(:user) }
-    let(:valid_params) { { user_id: user.id } }
+    let(:valid_params) { { account: { user_id: user.id } } }
 
     context 'when the request is valid' do
       let(:account) { User.find(user.id).account }
@@ -38,7 +38,7 @@ describe 'AccountsController', type: :request do
     end
 
     context 'when user does not exist' do
-      let(:invalid_params) { { user_id: 999 } }
+      let(:invalid_params) { { account: { user_id: 999 } } }
 
       before do
         post accounts_path,
@@ -74,7 +74,7 @@ describe 'AccountsController', type: :request do
         allow(Account).to receive(:create!).and_raise(ActiveRecord::RecordInvalid.new(Account.new))
 
         post accounts_path,
-             params: { user_id: user.id },
+             params: { account: { user_id: user.id } },
              headers: basic_credentials(user.cpf, user.password)
       end
 
@@ -146,7 +146,7 @@ describe 'AccountsController', type: :request do
 
       before do
         get balance_path,
-            params: { account_id: account.id },
+            params: { account: { account_id: account.id } },
             headers: basic_credentials(user.cpf, user.password)
       end
 
@@ -161,7 +161,7 @@ describe 'AccountsController', type: :request do
 
       before do
         get balance_path,
-            params: { account_id: 999 },
+            params: { account: { account_id: 999 } },
             headers: basic_credentials(user.cpf, user.password)
       end
 
@@ -192,7 +192,7 @@ describe 'AccountsController', type: :request do
 
       before do
         get balance_path,
-            params: { account_id: account.id },
+            params: { account: { account_id: account.id } },
             headers: basic_credentials('user@email.com', '00000000')
       end
 
@@ -234,7 +234,7 @@ describe 'AccountsController', type: :request do
       before do
         statement
         get statement_path,
-            params: { account_id: account.id },
+            params: { account: { account_id: account.id } },
             headers: basic_credentials(user.cpf, user.password)
       end
 
@@ -247,7 +247,7 @@ describe 'AccountsController', type: :request do
 
       before do
         get statement_path,
-            params: { account_id: 999 },
+            params: { account: { account_id: 999 } },
             headers: basic_credentials(user.cpf, user.password)
       end
 
@@ -263,6 +263,7 @@ describe 'AccountsController', type: :request do
 
       before do
         get statement_path,
+            params: { account: {} },
             headers: basic_credentials(user.cpf, user.password)
       end
 
@@ -278,7 +279,7 @@ describe 'AccountsController', type: :request do
 
       before do
         get statement_path,
-            params: { account_id: account.id },
+            params: { account: { account_id: account.id } },
             headers: basic_credentials('user@email.com', '00000000')
       end
 
