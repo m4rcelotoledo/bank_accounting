@@ -1,4 +1,77 @@
-# bank_accounting 0.0.12 (Jul 28, 2025)
+# bank_accounting 0.0.13 (Jul 28, 2025)
+
+## 🚀 Major Improvements
+
+### Authentication System Overhaul
+* **JWT Authentication** - Replaced Basic HTTP authentication with JWT tokens
+* **Token Security** - Implemented secure JWT tokens with 24-hour expiration
+* **Centralized Error Handling** - Enhanced ExceptionHandler with JWT-specific error responses
+* **Authentication Endpoints** - Added `/auth/login`, `/auth/logout`, and `/auth/me` endpoints
+* **Token Validation** - Robust token validation with proper error handling
+
+### Security Enhancements
+* **JWT Service** - Created dedicated JwtService for token management
+* **Token Expiration** - Automatic token expiration after 24 hours
+* **Secure Token Generation** - Tokens signed with Rails secret key using HS256 algorithm
+* **Error Centralization** - All authentication errors now centralized in ExceptionHandler
+* **Input Validation** - Enhanced parameter validation for authentication endpoints
+
+### Code Quality & Standards
+* **100% Test Coverage** - Maintained complete line coverage with new JWT functionality
+* **English Documentation** - All tests and comments translated to English
+* **RuboCop Compliance** - Maintained all style violations and naming conventions
+* **Test Organization** - Comprehensive test coverage for JWT authentication
+* **Error Response Standardization** - Consistent error response format across all endpoints
+
+### Architecture Enhancements
+* **Service Layer** - Added JwtService for token management
+* **Controller Separation** - New AuthController for authentication endpoints
+* **Route Organization** - Clean separation of authentication routes
+* **Middleware Integration** - Seamless JWT integration with existing authentication flow
+
+### Documentation & Developer Experience
+* **JWT Documentation** - Comprehensive documentation for JWT authentication
+* **API Examples** - Updated all API examples to use JWT authentication
+* **Authentication Guide** - Detailed guide for JWT token usage
+* **Migration Guide** - Clear instructions for migrating from Basic Auth to JWT
+
+### Testing & Quality Assurance
+* **JWT Test Coverage** - Complete test coverage for JWT service and authentication endpoints
+* **Error Scenario Testing** - Comprehensive testing of authentication error scenarios
+* **Token Validation Testing** - Thorough testing of token generation and validation
+* **Integration Testing** - End-to-end testing of JWT authentication flow
+
+## 🔧 Technical Details
+
+### New Features
+* JWT token-based authentication system
+* Token generation with user information and expiration
+* Secure token validation and error handling
+* Authentication endpoints for login, logout, and user info
+* Centralized error handling for authentication failures
+
+### Fixed Issues
+* Replaced insecure Basic HTTP authentication
+* Centralized authentication error responses
+* Improved security with token-based authentication
+* Enhanced error handling for invalid or missing tokens
+* Standardized authentication error messages
+
+### Breaking Changes
+* **Authentication Method** - Changed from Basic HTTP authentication to JWT tokens
+* **API Headers** - Now requires `Authorization: Bearer <token>` instead of Basic auth
+* **Error Responses** - Updated error response format for authentication failures
+
+### Migration Guide
+* Users must now login via `/auth/login` to obtain JWT tokens
+* All API requests must include `Authorization: Bearer <token>` header
+* Tokens expire after 24 hours and require re-authentication
+
+*Marcelo Toledo*
+
+---
+
+## bank_accounting 0.0.12 (Jul 28, 2025)
 
 ## 🚀 Major Improvements
 
