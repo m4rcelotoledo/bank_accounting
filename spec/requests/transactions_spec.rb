@@ -35,6 +35,40 @@ describe 'TransactionsController', type: :request do
       end
     end
 
+    context 'when amount is zero' do
+      let(:user) { create(:user) }
+      let(:account) { create(:account_with_transaction, user: user) }
+      let(:params) { { account_id: account.id, amount: 0 } }
+
+      before do
+        post deposit_path,
+             params: params,
+             headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
+      end
+    end
+
+    context 'when amount is negative' do
+      let(:user) { create(:user) }
+      let(:account) { create(:account_with_transaction, user: user) }
+      let(:params) { { account_id: account.id, amount: -100 } }
+
+      before do
+        post deposit_path,
+             params: params,
+             headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
+      end
+    end
+
     context 'when the request is valid' do
       let(:user) { create(:user) }
       let(:account) { create(:account_with_transaction, user: user) }
@@ -166,6 +200,78 @@ describe 'TransactionsController', type: :request do
         expect(response).to have_http_status :not_found
         expect(json[:errors].first[:status]).to eq '404'
         expect(json[:errors].first[:title]).to eq 'Not Found'
+      end
+    end
+
+    context 'when source and destination accounts are the same' do
+      let(:user) { create(:user) }
+      let(:account) { create(:account_with_transaction, user: user) }
+      let(:amount) { Faker::Commerce.price(range: 50..100.0, as_string: true) }
+      let(:params) do
+        {
+          account_id: account.id,
+          destination_account: account.id,
+          amount: amount
+        }
+      end
+
+      before do
+        post transfer_path,
+             params: params,
+             headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns unprocessable entity error' do
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to eq 'Source and destination accounts must be different'
+      end
+    end
+
+    context 'when amount is zero' do
+      let(:user) { create(:user) }
+      let(:source_account) { create(:account_with_transaction, user: user) }
+      let(:destination_account) { create(:account_with_transaction, user: user) }
+      let(:params) do
+        {
+          account_id: source_account.id,
+          destination_account: destination_account.id,
+          amount: 0
+        }
+      end
+
+      before do
+        post transfer_path,
+             params: params,
+             headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns unprocessable entity error' do
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
+      end
+    end
+
+    context 'when amount is negative' do
+      let(:user) { create(:user) }
+      let(:source_account) { create(:account_with_transaction, user: user) }
+      let(:destination_account) { create(:account_with_transaction, user: user) }
+      let(:params) do
+        {
+          account_id: source_account.id,
+          destination_account: destination_account.id,
+          amount: -100
+        }
+      end
+
+      before do
+        post transfer_path,
+             params: params,
+             headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns unprocessable entity error' do
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
       end
     end
 
