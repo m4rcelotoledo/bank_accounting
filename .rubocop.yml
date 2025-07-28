@@ -36,3 +36,7 @@ Style/ClassAndModuleChildren:
   EnforcedStyle: compact
 Style/Documentation:
   Enabled: false
+
+# Allow the use of .then in controllers
+Style/MethodCallWithArgsParentheses:
+  Enabled: false
