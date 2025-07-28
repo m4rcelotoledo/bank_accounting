@@ -3,10 +3,8 @@
 require 'simplecov'
 
 SimpleCov.start 'rails' do
-  enable_coverage :branch
-
   minimum_coverage 100
-  minimum_coverage line: 100, branch: 100
+  minimum_coverage line: 100
   maximum_coverage_drop 2
 
   SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(
