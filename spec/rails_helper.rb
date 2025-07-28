@@ -45,7 +45,7 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
   config.include RequestHelper, type: :request
-  config.include BasicAuthHelper, type: :request
+  config.include JwtAuthHelper, type: :request
   config.include FormatHelper, type: :request
 
   config.before(:suite) do

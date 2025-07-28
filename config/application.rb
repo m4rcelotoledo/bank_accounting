@@ -34,5 +34,8 @@ module BankAccounting
 
     # Force SSL in production
     config.force_ssl = true if Rails.env.production?
+
+    # Autoload services
+    config.autoload_paths += %W[#{config.root}/app/services]
   end
 end
