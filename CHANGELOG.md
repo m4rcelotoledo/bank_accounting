@@ -8,6 +8,7 @@
 * **Code Refactoring** - Improved method naming with predicate methods (ending with `?`)
 * **Test Optimization** - Removed 5 duplicate test scenarios while maintaining coverage
 * **Documentation** - Translated all comments to English for international standards
+* **Security Hardening** - Fixed mass assignment vulnerabilities in controllers using strong parameters
 
 ### Architecture Enhancements
 * **Validation Centralization** - Improved `Validations` concern with proper predicate methods
