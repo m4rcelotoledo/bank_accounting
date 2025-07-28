@@ -4,7 +4,6 @@ class ApplicationController < ActionController::API
   include ActionController::HttpAuthentication::Basic::ControllerMethods
   include ExceptionHandler
   include Response
-  include Validations
 
   before_action :authenticate
 
