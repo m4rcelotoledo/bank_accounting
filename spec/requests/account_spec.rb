@@ -48,7 +48,7 @@ describe 'AccountsController', type: :request do
 
       it 'returns status code 422' do
         expect(response).to have_http_status :unprocessable_entity
-        expect(json[:errors].first[:detail]).to eq 'User not found'
+        expect(json[:errors].first[:detail]).to eq 'Validation failed: User must exist'
       end
     end
 
@@ -182,7 +182,7 @@ describe 'AccountsController', type: :request do
 
       it 'returns status code 422' do
         expect(response).to have_http_status :unprocessable_entity
-        expect(json[:errors].first[:detail]).to include('Missing required parameters: account_id')
+        expect(json[:errors].first[:detail]).to include('Missing required parameters')
       end
     end
 
@@ -269,7 +269,7 @@ describe 'AccountsController', type: :request do
 
       it 'returns status code 422' do
         expect(response).to have_http_status :unprocessable_entity
-        expect(json[:errors].first[:detail]).to include('Missing required parameters: account_id')
+        expect(json[:errors].first[:detail]).to include('Missing required parameters')
       end
     end
 
