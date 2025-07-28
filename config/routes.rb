@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  # Auth routes
+  post '/auth/login', to: 'auth#login'
+  post '/auth/logout', to: 'auth#logout'
+  get '/auth/me', to: 'auth#me'
+
   resources :users, only: %i[create index show]
 
   resources :accounts, only: %i[create show]

@@ -39,6 +39,18 @@ module ExceptionHandler
         {
           status: '401',
           title: 'Unauthorized',
+          detail: 'Invalid or missing token'
+        }
+      ]
+    }, status: :unauthorized
+  end
+
+  def render_invalid_credentials
+    render json: {
+      errors: [
+        {
+          status: '401',
+          title: 'Unauthorized',
           detail: 'Invalid credentials'
         }
       ]
