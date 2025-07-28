@@ -6,9 +6,9 @@ class JwtService
   def self.secret_key
     if Rails.env.production?
       Rails.application.credentials.secret_key_base || raise('Missing secret_key_base in credentials for production!')
-    else
-      Rails.application.credentials.secret_key_base || 'fallback_secret_key_for_jwt_development'
     end
+
+    Rails.application.credentials.secret_key_base || 'fallback_secret_key_for_jwt_development'
   end
 
   def self.encode(payload)
