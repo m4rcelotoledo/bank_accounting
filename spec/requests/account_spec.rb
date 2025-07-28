@@ -37,6 +37,21 @@ describe 'AccountsController', type: :request do
       end
     end
 
+    context 'when user does not exist' do
+      let(:invalid_params) { { user_id: 999 } }
+
+      before do
+        post accounts_path,
+             params: invalid_params,
+             headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to eq 'User not found'
+      end
+    end
+
     context 'when the user is unauthorized' do
       before do
         post accounts_path,
@@ -89,6 +104,21 @@ describe 'AccountsController', type: :request do
         expect(json[:errors].first[:detail]).to match(/Couldn't find Account/)
       end
     end
+
+    context 'when the user is unauthorized' do
+      let(:account) { create(:account, user: user) }
+
+      before do
+        get account_path(account.id),
+            headers: basic_credentials('user@email.com', '00000000')
+      end
+
+      it 'returns status code 401' do
+        expect(response).to have_http_status :unauthorized
+        expect(json[:errors].first[:status]).to eq '401'
+        expect(json[:errors].first[:title]).to eq 'Unauthorized'
+      end
+    end
   end
 
   describe 'GET /balance' do
@@ -105,6 +135,53 @@ describe 'AccountsController', type: :request do
       it do
         expect(response).to have_http_status :ok
         expect(json[:balance]).to eq 0.0
+      end
+    end
+
+    context 'when account does not exist' do
+      let(:user) { create(:user) }
+
+      before do
+        get balance_path,
+            params: { account_id: 999 },
+            headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status :not_found
+        expect(json[:errors].first[:status]).to eq '404'
+        expect(json[:errors].first[:title]).to eq 'Not Found'
+      end
+    end
+
+    context 'when account_id parameter is missing' do
+      let(:user) { create(:user) }
+
+      before do
+        get balance_path,
+            headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to include('Missing required parameters: account_id')
+      end
+    end
+
+    context 'when the user is unauthorized' do
+      let(:user) { create(:user) }
+      let(:account) { create(:account_with_transaction, user: user) }
+
+      before do
+        get balance_path,
+            params: { account_id: account.id },
+            headers: basic_credentials('user@email.com', '00000000')
+      end
+
+      it 'returns status code 401' do
+        expect(response).to have_http_status :unauthorized
+        expect(json[:errors].first[:status]).to eq '401'
+        expect(json[:errors].first[:title]).to eq 'Unauthorized'
       end
     end
   end
@@ -145,6 +222,53 @@ describe 'AccountsController', type: :request do
 
       it { expect(response.body).to eq statement.to_json }
       it { expect(account.current_balance).to eq balance }
+    end
+
+    context 'when account does not exist' do
+      let(:user) { create(:user) }
+
+      before do
+        get statement_path,
+            params: { account_id: 999 },
+            headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status :not_found
+        expect(json[:errors].first[:status]).to eq '404'
+        expect(json[:errors].first[:title]).to eq 'Not Found'
+      end
+    end
+
+    context 'when account_id parameter is missing' do
+      let(:user) { create(:user) }
+
+      before do
+        get statement_path,
+            headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to include('Missing required parameters: account_id')
+      end
+    end
+
+    context 'when the user is unauthorized' do
+      let(:user) { create(:user) }
+      let(:account) { create(:account_with_transaction, user: user) }
+
+      before do
+        get statement_path,
+            params: { account_id: account.id },
+            headers: basic_credentials('user@email.com', '00000000')
+      end
+
+      it 'returns status code 401' do
+        expect(response).to have_http_status :unauthorized
+        expect(json[:errors].first[:status]).to eq '401'
+        expect(json[:errors].first[:title]).to eq 'Unauthorized'
+      end
     end
   end
 end
