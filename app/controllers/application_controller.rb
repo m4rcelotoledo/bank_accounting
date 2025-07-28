@@ -13,7 +13,7 @@ class ApplicationController < ActionController::API
 
   def authenticate
     return if authenticate_with_http_basic do |user, pass|
-      @current_user = User.find_by(cpf: user).try(:authenticate, pass)
+      @current_user = User.find_by(cpf: user)&.authenticate(pass)
     end
 
     render json: {
@@ -25,5 +25,21 @@ class ApplicationController < ActionController::API
         }
       ]
     }, status: :unauthorized
+  end
+
+  def validate_presence_of_required_params(required_params)
+    missing_params = required_params.select { |param| params[param].blank? }
+
+    return if missing_params.empty?
+
+    render json: {
+      errors: [
+        {
+          status: '422',
+          title: 'Unprocessable Entity',
+          detail: "Missing required parameters: #{missing_params.join(', ')}"
+        }
+      ]
+    }, status: :unprocessable_entity
   end
 end

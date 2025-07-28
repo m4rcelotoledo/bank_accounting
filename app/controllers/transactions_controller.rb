@@ -2,6 +2,8 @@
 
 class TransactionsController < ApplicationController
   before_action :set_account, only: %i[deposit transfer]
+  before_action :validate_deposit_params, only: [:deposit]
+  before_action :validate_transfer_params, only: [:transfer]
 
   attr_reader :account
 
@@ -43,5 +45,13 @@ class TransactionsController < ApplicationController
 
   def set_account
     @account = Account.find transaction_params[:account_id]
+  end
+
+  def validate_deposit_params
+    validate_presence_of_required_params(%i[account_id amount])
+  end
+
+  def validate_transfer_params
+    validate_presence_of_required_params(%i[account_id destination_account amount])
   end
 end
