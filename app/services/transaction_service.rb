@@ -3,6 +3,8 @@
 class TransactionService
   class << self
     def deposit(account_id, amount)
+      validate_deposit_params(account_id, amount)
+
       create_transaction(
         account_id: account_id,
         amount: amount,
@@ -27,6 +29,16 @@ class TransactionService
 
     private
 
+    def validate_deposit_params(account_id, amount)
+      missing_params = []
+      missing_params << 'account_id' if account_id.blank?
+      missing_params << 'amount' if amount.blank?
+
+      raise ArgumentError, "Missing required parameters: #{missing_params.join(', ')}" if missing_params.any?
+
+      raise ArgumentError, 'Amount must be positive' unless amount.to_f.positive?
+    end
+
     def create_transaction(attributes)
       # Validate account exists before creating transaction
       unless Account.exists?(id: attributes[:account_id])
@@ -37,6 +49,13 @@ class TransactionService
     end
 
     def validate_transfer_params(source_account_id, destination_account_id, amount)
+      missing_params = []
+      missing_params << 'account_id' if source_account_id.blank?
+      missing_params << 'destination_account' if destination_account_id.blank?
+      missing_params << 'amount' if amount.blank?
+
+      raise ArgumentError, "Missing required parameters: #{missing_params.join(', ')}" if missing_params.any?
+
       if source_account_id == destination_account_id
         raise ArgumentError, 'Source and destination accounts must be different'
       end
