@@ -3,9 +3,9 @@
 class TransactionsController < ApplicationController
   # POST /deposit
   def deposit
-    return if validate_presence_of_required_params?(%i[account_id amount])
-    return if validate_account_exists?(params[:account_id])
-    return if validate_amount_positive?(params[:amount])
+    return if validate_presence_of_required_params?(%i[account_id amount], :transaction)
+    return if validate_account_exists?(transaction_params[:account_id])
+    return if validate_amount_positive?(transaction_params[:amount])
 
     TransactionService.deposit(
       transaction_params[:account_id],
@@ -28,15 +28,15 @@ class TransactionsController < ApplicationController
 
   # POST /transfer
   def transfer
-    return if validate_presence_of_required_params?(%i[account_id destination_account amount])
-    return if validate_account_exists?(params[:account_id])
-    return if validate_account_exists?(params[:destination_account])
-    return if validate_amount_positive?(params[:amount])
+    return if validate_presence_of_required_params?(%i[account_id destination_account amount], :transaction)
+    return if validate_account_exists?(transaction_params[:account_id])
+    return if validate_account_exists?(transaction_params[:destination_account])
+    return if validate_amount_positive?(transaction_params[:amount])
 
     TransactionService.transfer!(
-      params[:account_id],
-      params[:destination_account],
-      params[:amount]
+      transaction_params[:account_id],
+      transaction_params[:destination_account],
+      transaction_params[:amount]
     )
 
     render json: { message: 'Transfer successful' }, status: :created
@@ -45,6 +45,6 @@ class TransactionsController < ApplicationController
   private
 
   def transaction_params
-    params.permit(:account_id, :destination_account, :amount)
+    params.expect(transaction: %i[account_id destination_account amount])
   end
 end

@@ -41,8 +41,9 @@ module Validations
     false
   end
 
-  def validate_presence_of_required_params?(required_params)
-    missing_params = required_params.select { |param| params[param].blank? }
+  def validate_presence_of_required_params?(required_params, param_key = :account)
+    param_hash = params[param_key] || {}
+    missing_params = required_params.select { |param| param_hash[param].blank? }
 
     return false if missing_params.empty?
 

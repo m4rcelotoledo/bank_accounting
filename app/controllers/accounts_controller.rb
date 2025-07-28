@@ -48,18 +48,20 @@ class AccountsController < ApplicationController
   private
 
   def account_params
-    params.permit(:user_id, :account_id)
+    params.expect(account: %i[user_id account_id])
   end
 
   def validate_balance_params?
-    validate_presence_of_required_params?(%i[account_id])
+    validate_presence_of_required_params?(%i[account_id], :account)
   end
 
   def validate_statement_params?
-    validate_presence_of_required_params?(%i[account_id])
+    validate_presence_of_required_params?(%i[account_id], :account)
   end
 
   def check_user_exists_before_create?
+    return unless account_params
+
     validate_user_exists?(account_params[:user_id])
   end
 end
