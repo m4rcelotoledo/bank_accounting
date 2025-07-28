@@ -1,8 +1,0 @@
-#!/bin/bash
-
-CONTAINER_CREATED=$(docker ps --filter "name=bank_accounting_server" --format "{{.Names}}")
-
-if [[ "$CONTAINER_CREATED" == "" ]]; then
-    echo "Server was not running. Run it to speed up"
-    docker-compose up -d
-fi
