@@ -24,5 +24,15 @@ module BankAccounting
     config.load_defaults 8.0
     config.api_only = true
     config.active_support.to_time_preserves_timezone = :zone
+
+    # Security configurations
+    config.action_controller.permit_all_parameters = false
+    config.action_controller.action_on_unpermitted_parameters = :raise
+
+    # Disable detailed error messages in production
+    config.consider_all_requests_local = false if Rails.env.production?
+
+    # Force SSL in production
+    config.force_ssl = true if Rails.env.production?
   end
 end
