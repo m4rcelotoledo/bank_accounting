@@ -9,6 +9,7 @@ gem 'base64', require: false
 gem 'bcrypt'
 gem 'bootsnap', '~> 1.4', require: false
 gem 'dotenv-rails'
+gem 'jwt'
 gem 'kaminari'
 gem 'pg'
 gem 'puma'
