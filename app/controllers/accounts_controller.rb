@@ -10,8 +10,6 @@ class AccountsController < ApplicationController
     Account.includes(:user, :transactions).find(params[:id]).then do |account|
       json_response account
     end
-  rescue ActiveRecord::RecordNotFound
-    render_not_found("Couldn't find Account with 'id'=#{params[:id]}")
   end
 
   # GET /balance
@@ -29,8 +27,6 @@ class AccountsController < ApplicationController
       AccountService.balance_initial account.id
       json_response account, :created
     end
-  rescue ActiveRecord::RecordInvalid => e
-    render_unprocessable_entity(e.message)
   end
 
   # GET /statement
