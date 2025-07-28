@@ -31,6 +31,8 @@ RSpec/MultipleExpectations:
   Enabled: false
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
+RSpec/NestedGroups:
+  Enabled: false
 
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
