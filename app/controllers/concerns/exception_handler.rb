@@ -9,15 +9,18 @@ module ExceptionHandler
     end
 
     rescue_from ActiveRecord::RecordInvalid do |error|
-      json_response({ errors: [{ status: '422', title: 'Unprocessable Entity', detail: error.message }] }, :unprocessable_entity)
+      json_response({ errors: [{ status: '422', title: 'Unprocessable Entity', detail: error.message }] },
+                    :unprocessable_entity)
     end
 
     rescue_from InsufficientFunds do |error|
-      json_response({ errors: [{ status: '422', title: 'Insufficient Funds', detail: error.message }] }, :unprocessable_entity)
+      json_response({ errors: [{ status: '422', title: 'Insufficient Funds', detail: error.message }] },
+                    :unprocessable_entity)
     end
 
     rescue_from ArgumentError do |error|
-      json_response({ errors: [{ status: '422', title: 'Unprocessable Entity', detail: error.message }] }, :unprocessable_entity)
+      json_response({ errors: [{ status: '422', title: 'Unprocessable Entity', detail: error.message }] },
+                    :unprocessable_entity)
     end
   end
 

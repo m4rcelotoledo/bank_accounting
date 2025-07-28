@@ -17,6 +17,22 @@ describe 'TransactionsController', type: :request do
       end
     end
 
+    context 'when required parameters are missing' do
+      let(:user) { create(:user) }
+      let(:params) { { account_id: 1 } } # missing amount
+
+      before do
+        post deposit_path,
+             params: params,
+             headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to eq 'Missing required parameters: amount'
+      end
+    end
+
     context 'when the request is invalid' do
       let(:user) { create(:user) }
       let(:account) { create(:account_with_transaction, user: user) }
@@ -35,27 +51,34 @@ describe 'TransactionsController', type: :request do
       end
     end
 
-    context 'when amount is zero' do
+    context 'when amount is invalid' do
       let(:user) { create(:user) }
       let(:account) { create(:account_with_transaction, user: user) }
-      let(:params) { { account_id: account.id, amount: 0 } }
 
-      before do
-        post deposit_path,
-             params: params,
-             headers: basic_credentials(user.cpf, user.password)
-      end
+      [
+        { amount: 0, description: 'zero' },
+        { amount: -100, description: 'negative' }
+      ].each do |test_case|
+        context "when amount is #{test_case[:description]}" do
+          let(:params) { { account_id: account.id, amount: test_case[:amount] } }
 
-      it 'returns status code 422' do
-        expect(response).to have_http_status :unprocessable_entity
-        expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
+          before do
+            post deposit_path,
+                 params: params,
+                 headers: basic_credentials(user.cpf, user.password)
+          end
+
+          it 'returns status code 422' do
+            expect(response).to have_http_status :unprocessable_entity
+            expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
+          end
+        end
       end
     end
 
-    context 'when amount is negative' do
+    context 'when the account is not found' do
       let(:user) { create(:user) }
-      let(:account) { create(:account_with_transaction, user: user) }
-      let(:params) { { account_id: account.id, amount: -100 } }
+      let(:params) { { account_id: 999, amount: 100 } }
 
       before do
         post deposit_path,
@@ -63,9 +86,9 @@ describe 'TransactionsController', type: :request do
              headers: basic_credentials(user.cpf, user.password)
       end
 
-      it 'returns status code 422' do
-        expect(response).to have_http_status :unprocessable_entity
-        expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
+      it 'returns status code 404' do
+        expect(response).to have_http_status :not_found
+        expect(json[:errors].first[:detail]).to eq "Couldn't find Account with 'id'=999"
       end
     end
 
@@ -151,6 +174,22 @@ describe 'TransactionsController', type: :request do
       end
     end
 
+    context 'when required parameters are missing' do
+      let(:user) { create(:user) }
+      let(:params) { { account_id: 1 } } # missing destination_account and amount
+
+      before do
+        post transfer_path,
+             params: params,
+             headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to eq 'Missing required parameters: destination_account, amount'
+      end
+    end
+
     context 'when the source account is not found' do
       let(:user) { create(:user) }
       let(:destination_account) do
@@ -227,51 +266,35 @@ describe 'TransactionsController', type: :request do
       end
     end
 
-    context 'when amount is zero' do
+    context 'when amount is invalid' do
       let(:user) { create(:user) }
       let(:source_account) { create(:account_with_transaction, user: user) }
       let(:destination_account) { create(:account_with_transaction, user: user) }
-      let(:params) do
-        {
-          account_id: source_account.id,
-          destination_account: destination_account.id,
-          amount: 0
-        }
-      end
 
-      before do
-        post transfer_path,
-             params: params,
-             headers: basic_credentials(user.cpf, user.password)
-      end
+      [
+        { amount: 0, description: 'zero' },
+        { amount: -100, description: 'negative' }
+      ].each do |test_case|
+        context "when amount is #{test_case[:description]}" do
+          let(:params) do
+            {
+              account_id: source_account.id,
+              destination_account: destination_account.id,
+              amount: test_case[:amount]
+            }
+          end
 
-      it 'returns unprocessable entity error' do
-        expect(response).to have_http_status :unprocessable_entity
-        expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
-      end
-    end
+          before do
+            post transfer_path,
+                 params: params,
+                 headers: basic_credentials(user.cpf, user.password)
+          end
 
-    context 'when amount is negative' do
-      let(:user) { create(:user) }
-      let(:source_account) { create(:account_with_transaction, user: user) }
-      let(:destination_account) { create(:account_with_transaction, user: user) }
-      let(:params) do
-        {
-          account_id: source_account.id,
-          destination_account: destination_account.id,
-          amount: -100
-        }
-      end
-
-      before do
-        post transfer_path,
-             params: params,
-             headers: basic_credentials(user.cpf, user.password)
-      end
-
-      it 'returns unprocessable entity error' do
-        expect(response).to have_http_status :unprocessable_entity
-        expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
+          it 'returns unprocessable entity error' do
+            expect(response).to have_http_status :unprocessable_entity
+            expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
+          end
+        end
       end
     end
 

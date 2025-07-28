@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
 class TransactionsController < ApplicationController
-  before_action :set_account, only: %i[deposit transfer]
-  before_action :validate_deposit_params, only: [:deposit]
-  before_action :validate_transfer_params, only: [:transfer]
-
-  attr_reader :account
-
   # POST /deposit
   def deposit
+    return if validate_presence_of_required_params?(%i[account_id amount])
+    return if validate_account_exists?(params[:account_id])
+    return if validate_amount_positive?(params[:amount])
+
     TransactionService.deposit(
       transaction_params[:account_id],
       transaction_params[:amount]
@@ -21,6 +19,8 @@ class TransactionsController < ApplicationController
 
   # GET /transactions/:id
   def show
+    return if validate_transaction_exists?(params[:id])
+
     Transaction.find(params[:id]).then do |transaction|
       json_response transaction
     end
@@ -28,6 +28,11 @@ class TransactionsController < ApplicationController
 
   # POST /transfer
   def transfer
+    return if validate_presence_of_required_params?(%i[account_id destination_account amount])
+    return if validate_account_exists?(params[:account_id])
+    return if validate_account_exists?(params[:destination_account])
+    return if validate_amount_positive?(params[:amount])
+
     TransactionService.transfer!(
       params[:account_id],
       params[:destination_account],
@@ -41,17 +46,5 @@ class TransactionsController < ApplicationController
 
   def transaction_params
     params.permit(:account_id, :destination_account, :amount)
-  end
-
-  def set_account
-    @account = Account.find transaction_params[:account_id]
-  end
-
-  def validate_deposit_params
-    validate_presence_of_required_params(%i[account_id amount])
-  end
-
-  def validate_transfer_params
-    validate_presence_of_required_params(%i[account_id destination_account amount])
   end
 end
