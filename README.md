@@ -149,12 +149,29 @@ host: localhost
 
 ### Authentication
 
-All API endpoints require Basic Authentication using CPF and password:
+A aplicação utiliza autenticação JWT (JSON Web Token). Para acessar os endpoints protegidos, você precisa:
 
+1. **Fazer login** para obter um token JWT
+2. **Incluir o token** no header `Authorization` das requisições
+
+> 📖 **Documentação Completa**: Para informações detalhadas sobre autenticação JWT, consulte [JWT_AUTHENTICATION.md](JWT_AUTHENTICATION.md)
+
+#### Login
 ```bash
-# Example using curl
+# Obter token JWT
+curl -X POST "http://localhost:3000/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cpf": "12345678901",
+    "password": "password"
+  }'
+```
+
+#### Usar o token
+```bash
+# Exemplo usando curl
 curl -X GET "http://localhost:3000/balance" \
-  -H "Authorization: Basic $(echo -n '12345678901:password' | base64)" \
+  -H "Authorization: Bearer <seu_token_jwt>" \
   -H "Content-Type: application/json"
 ```
 
@@ -167,11 +184,76 @@ http://localhost:3000
 ### Headers
 
 ```
-Authorization: Basic <base64_encoded_credentials>
+Authorization: Bearer <jwt_token>
 Content-Type: application/json
 ```
 
 ## 🔧 API Endpoints
+
+### Authentication
+
+#### Login
+```http
+POST /auth/login
+```
+
+**Request Body:**
+```json
+{
+  "cpf": "12345678901",
+  "password": "password"
+}
+```
+
+**Response:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "cpf": "12345678901"
+  }
+}
+```
+
+#### Logout
+```http
+POST /auth/logout
+```
+
+**Headers:**
+```
+Authorization: Bearer <jwt_token>
+```
+
+**Response:**
+```json
+{
+  "message": "Logout realizado com sucesso"
+}
+```
+
+#### Get Current User
+```http
+GET /auth/me
+```
+
+**Headers:**
+```
+Authorization: Bearer <jwt_token>
+```
+
+**Response:**
+```json
+{
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "cpf": "12345678901"
+  }
+}
+```
 
 ### Users
 
@@ -374,7 +456,8 @@ rails db:seed
 
 ### Implemented Security Measures
 
-- **Basic Authentication** - Secure user authentication
+- **JWT Authentication** - Secure token-based authentication
+- **Token Expiration** - Tokens expire in 24 hours
 - **Input Validation** - Comprehensive parameter validation
 - **SQL Injection Protection** - ActiveRecord parameter binding
 - **XSS Protection** - Rails built-in protection
