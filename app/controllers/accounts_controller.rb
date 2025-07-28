@@ -56,7 +56,7 @@ class AccountsController < ApplicationController
   end
 
   def check_user_exists_before_create?
-    return unless account_params
+    return false unless account_params
 
     validate_user_exists?(account_params[:user_id])
   end
