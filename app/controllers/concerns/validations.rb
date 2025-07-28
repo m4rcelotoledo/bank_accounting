@@ -31,7 +31,9 @@ module Validations
 
   def validate_amount_positive(amount)
     return false if amount.nil? || amount.to_s.strip.empty?
+
     amount_float = amount.to_f
+
     if !amount_float.positive?
       render_unprocessable_entity('Amount must be positive')
       return true
@@ -41,7 +43,9 @@ module Validations
 
   def validate_presence_of_required_params(required_params)
     missing_params = required_params.select { |param| params[param].blank? }
+
     return false if missing_params.empty?
+
     render_missing_parameters(missing_params)
     true
   end
