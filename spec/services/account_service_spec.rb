@@ -9,9 +9,9 @@ RSpec.describe AccountService, type: :service do
     let(:account) { create(:account) }
 
     it 'creates an initial balance transaction' do
-      expect {
+      expect do
         account_service.balance_initial(account.id)
-      }.to change(Transaction, :count).by(1)
+      end.to change(Transaction, :count).by(1)
 
       transaction = Transaction.last
       expect(transaction.account_id).to eq account.id

@@ -65,6 +65,24 @@ describe 'AccountsController', type: :request do
         expect(json[:errors].first[:title]).to eq 'Unauthorized'
       end
     end
+
+    context 'when account creation fails ActiveRecord validation' do
+      let(:user) { create(:user) }
+
+      before do
+        # Simulate a situation where creation fails due to validation
+        allow(Account).to receive(:create!).and_raise(ActiveRecord::RecordInvalid.new(Account.new))
+
+        post accounts_path,
+             params: { user_id: user.id },
+             headers: basic_credentials(user.cpf, user.password)
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status :unprocessable_entity
+        expect(json[:errors].first[:detail]).to include('Validation failed')
+      end
+    end
   end
 
   describe 'GET /accounts/:id' do

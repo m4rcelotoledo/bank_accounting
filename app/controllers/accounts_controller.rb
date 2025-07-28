@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class AccountsController < ApplicationController
-  before_action :validate_balance_params, only: [:balance]
-  before_action :validate_statement_params, only: [:statement]
-  before_action :validate_user_exists_before_create, only: [:create]
+  before_action :validate_balance_params?, only: [:balance]
+  before_action :validate_statement_params?, only: [:statement]
+  before_action :check_user_exists_before_create?, only: [:create]
 
   # GET /accounts/:id
   def show
@@ -16,7 +16,7 @@ class AccountsController < ApplicationController
 
   # GET /balance
   def balance
-    return if validate_account_exists(account_params[:account_id])
+    return if validate_account_exists?(account_params[:account_id])
 
     Account.includes(:transactions).find(account_params[:account_id]).then do |account|
       account.current_balance.then { |balance| json_response({ balance: balance }) }
@@ -35,7 +35,7 @@ class AccountsController < ApplicationController
 
   # GET /statement
   def statement
-    return if validate_account_exists(account_params[:account_id])
+    return if validate_account_exists?(account_params[:account_id])
 
     Account.includes(:transactions).find(account_params[:account_id]).then do |account|
       account.transactions.then do |transactions|
@@ -51,15 +51,15 @@ class AccountsController < ApplicationController
     params.permit(:user_id, :account_id)
   end
 
-  def validate_balance_params
-    validate_presence_of_required_params(%i[account_id])
+  def validate_balance_params?
+    validate_presence_of_required_params?(%i[account_id])
   end
 
-  def validate_statement_params
-    validate_presence_of_required_params(%i[account_id])
+  def validate_statement_params?
+    validate_presence_of_required_params?(%i[account_id])
   end
 
-  def validate_user_exists_before_create
-    validate_user_exists(account_params[:user_id])
+  def check_user_exists_before_create?
+    validate_user_exists?(account_params[:user_id])
   end
 end

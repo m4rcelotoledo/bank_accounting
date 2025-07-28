@@ -3,15 +3,17 @@
 require 'rails_helper'
 
 RSpec.describe TransactionService, type: :service do
+  subject(:transaction_service) { described_class }
+
   describe '.deposit' do
     let(:account) { create(:account) }
     let(:amount) { 100.0 }
 
     context 'when account exists' do
       it 'creates a credit transaction' do
-        expect {
-          TransactionService.deposit(account.id, amount)
-        }.to change(Transaction, :count).by(1)
+        expect do
+          transaction_service.deposit(account.id, amount)
+        end.to change(Transaction, :count).by(1)
 
         transaction = Transaction.last
         expect(transaction.account_id).to eq account.id
@@ -23,9 +25,9 @@ RSpec.describe TransactionService, type: :service do
 
     context 'when account does not exist' do
       it 'raises ActiveRecord::RecordNotFound' do
-        expect {
-          TransactionService.deposit(999, amount)
-        }.to raise_error(ActiveRecord::RecordNotFound, "Couldn't find Account with 'id'=999")
+        expect do
+          transaction_service.deposit(999, amount)
+        end.to raise_error(ActiveRecord::RecordNotFound, "Couldn't find Account with 'id'=999")
       end
     end
   end
@@ -41,9 +43,9 @@ RSpec.describe TransactionService, type: :service do
       end
 
       it 'creates two transactions' do
-        expect {
-          TransactionService.transfer!(source_account.id, destination_account.id, amount)
-        }.to change(Transaction, :count).by(2)
+        expect do
+          transaction_service.transfer!(source_account.id, destination_account.id, amount)
+        end.to change(Transaction, :count).by(2)
 
         debit_transaction = Transaction.where(account: source_account).last
         credit_transaction = Transaction.where(account: destination_account).last
@@ -60,25 +62,25 @@ RSpec.describe TransactionService, type: :service do
 
     context 'when source and destination accounts are the same' do
       it 'raises ArgumentError' do
-        expect {
-          TransactionService.transfer!(source_account.id, source_account.id, amount)
-        }.to raise_error(ArgumentError, 'Source and destination accounts must be different')
+        expect do
+          transaction_service.transfer!(source_account.id, source_account.id, amount)
+        end.to raise_error(ArgumentError, 'Source and destination accounts must be different')
       end
     end
 
     context 'when amount is zero' do
       it 'raises ArgumentError' do
-        expect {
-          TransactionService.transfer!(source_account.id, destination_account.id, 0)
-        }.to raise_error(ArgumentError, 'Amount must be positive')
+        expect do
+          transaction_service.transfer!(source_account.id, destination_account.id, 0)
+        end.to raise_error(ArgumentError, 'Amount must be positive')
       end
     end
 
     context 'when amount is negative' do
       it 'raises ArgumentError' do
-        expect {
-          TransactionService.transfer!(source_account.id, destination_account.id, -100)
-        }.to raise_error(ArgumentError, 'Amount must be positive')
+        expect do
+          transaction_service.transfer!(source_account.id, destination_account.id, -100)
+        end.to raise_error(ArgumentError, 'Amount must be positive')
       end
     end
 
@@ -88,17 +90,17 @@ RSpec.describe TransactionService, type: :service do
       end
 
       it 'raises InsufficientFunds' do
-        expect {
-          TransactionService.transfer!(source_account.id, destination_account.id, amount)
-        }.to raise_error(InsufficientFunds, 'Transaction canceled')
+        expect do
+          transaction_service.transfer!(source_account.id, destination_account.id, amount)
+        end.to raise_error(InsufficientFunds, 'Transaction canceled')
       end
     end
 
     context 'when source account does not exist' do
       it 'raises ActiveRecord::RecordNotFound' do
-        expect {
-          TransactionService.transfer!(999, destination_account.id, amount)
-        }.to raise_error(ActiveRecord::RecordNotFound, "Couldn't find Account with 'id'=999")
+        expect do
+          transaction_service.transfer!(999, destination_account.id, amount)
+        end.to raise_error(ActiveRecord::RecordNotFound, "Couldn't find Account with 'id'=999")
       end
     end
 
@@ -108,17 +110,17 @@ RSpec.describe TransactionService, type: :service do
       end
 
       it 'raises ActiveRecord::RecordNotFound' do
-        expect {
-          TransactionService.transfer!(source_account.id, 999, amount)
-        }.to raise_error(ActiveRecord::RecordNotFound, "Couldn't find Account with 'id'=999")
+        expect do
+          transaction_service.transfer!(source_account.id, 999, amount)
+        end.to raise_error(ActiveRecord::RecordNotFound, "Couldn't find Account with 'id'=999")
       end
     end
 
     context 'when both accounts do not exist' do
       it 'raises ActiveRecord::RecordNotFound for source account' do
-        expect {
-          TransactionService.transfer!(999, 888, amount)
-        }.to raise_error(ActiveRecord::RecordNotFound, "Couldn't find Account with 'id'=999")
+        expect do
+          transaction_service.transfer!(999, 888, amount)
+        end.to raise_error(ActiveRecord::RecordNotFound, "Couldn't find Account with 'id'=999")
       end
     end
   end
