@@ -22,6 +22,11 @@ module ExceptionHandler
       json_response({ errors: [{ status: '422', title: 'Unprocessable Entity', detail: error.message }] },
                     :unprocessable_entity)
     end
+
+    rescue_from ActionController::ParameterMissing do |error|
+      json_response({ errors: [{ status: '422', title: 'Unprocessable Entity', detail: 'Missing required parameters' }] },
+                    :unprocessable_entity)
+    end
   end
 
   private
