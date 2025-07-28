@@ -23,8 +23,10 @@ module ExceptionHandler
                     :unprocessable_entity)
     end
 
-    rescue_from ActionController::ParameterMissing do |error|
-      json_response({ errors: [{ status: '422', title: 'Unprocessable Entity', detail: 'Missing required parameters' }] },
+    rescue_from ActionController::ParameterMissing do |_error|
+      json_response({
+                      errors: [{ status: '422', title: 'Unprocessable Entity', detail: 'Missing required parameters' }]
+                    },
                     :unprocessable_entity)
     end
   end
