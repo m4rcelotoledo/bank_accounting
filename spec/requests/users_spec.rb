@@ -64,7 +64,7 @@ describe 'UsersController', type: :request do
     context 'when the user is unauthorized' do
       before do
         get users_path,
-            headers: basic_credentials('user@email.com', '00000000')
+            headers: { 'HTTP_AUTHORIZATION' => 'Bearer invalid_token' }
       end
 
       it 'returns status code 401' do
@@ -79,7 +79,7 @@ describe 'UsersController', type: :request do
 
       before do
         create_list(:user, 25)
-        get users_path, headers: basic_credentials(user.cpf, user.password)
+        get users_path, headers: jwt_credentials(user)
       end
 
       it { expect(json).not_to be_empty }
@@ -93,7 +93,7 @@ describe 'UsersController', type: :request do
 
     before do
       get user_path(user_id),
-          headers: basic_credentials(user.cpf, user.password)
+          headers: jwt_credentials(user)
     end
 
     context 'when user is not found' do
