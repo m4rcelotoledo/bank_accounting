@@ -71,11 +71,10 @@ jobs:
       env:
         RAILS_ENV: test
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/bank_accounting_test
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       run: bundle exec rspec --format progress
 
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage/.resultset.json
