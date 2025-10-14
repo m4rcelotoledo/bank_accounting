@@ -4,7 +4,7 @@
 [![Rails](https://img.shields.io/badge/Rails-8.0.2-red.svg)](https://rubyonrails.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker-24.0.0-blue.svg)](https://www.docker.com/)
-[![Test Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://codecov.io/gh/marcelotoledo5000/bank_accounting)
+[![Test Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen.svg)](https://codecov.io/gh/m4rcelotoledo/bank_accounting)
 [![RuboCop](https://img.shields.io/badge/RuboCop-passing-brightgreen.svg)](https://github.com/rubocop/rubocop)
 [![Security](https://img.shields.io/badge/security-A+-brightgreen.svg)](https://brakemanscanner.org/)
 
@@ -85,7 +85,7 @@ Bank Accounting API is a comprehensive banking system that provides secure accou
 | **Framework** | Rails | 8.0.2 |
 | **Database** | PostgreSQL | 15 |
 | **Testing** | RSpec | 8.0.1 |
-| **Code Quality** | RuboCop | 1.60.0 |
+| **Code Quality** | RuboCop | 1.81.1 |
 | **Security** | Brakeman | 7.1.0 |
 | **Containerization** | Docker | 24.0.0 |
 | **CI/CD** | GitHub Actions | Latest |
@@ -102,7 +102,7 @@ Bank Accounting API is a comprehensive banking system that provides secure accou
 
 ```bash
 # Clone the repository
-git clone git@github.com:marcelotoledo5000/bank_accounting.git
+git clone git@github.com:m4rcelotoledo/bank_accounting.git
 cd bank_accounting
 
 # Setup with Docker
@@ -116,7 +116,7 @@ make test       # Run all tests
 
 ```bash
 # Clone the repository
-git clone git@github.com:marcelotoledo5000/bank_accounting.git
+git clone git@github.com:m4rcelotoledo/bank_accounting.git
 cd bank_accounting
 
 # Install dependencies
@@ -511,6 +511,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ by the Bank Accounting Team**
 
-[![GitHub stars](https://img.shields.io/github/stars/marcelotoledo5000/bank_accounting.svg?style=social&label=Star)](https://github.com/marcelotoledo5000/bank_accounting)
-[![GitHub forks](https://img.shields.io/github/forks/marcelotoledo5000/bank_accounting.svg?style=social&label=Fork)](https://github.com/marcelotoledo5000/bank_accounting)
-[![GitHub issues](https://img.shields.io/github/issues/marcelotoledo5000/bank_accounting.svg)](https://github.com/marcelotoledo5000/bank_accounting/issues)
+[![GitHub stars](https://img.shields.io/github/stars/m4rcelotoledo/bank_accounting.svg?style=social&label=Star)](https://github.com/m4rcelotoledo/bank_accounting)
+[![GitHub forks](https://img.shields.io/github/forks/m4rcelotoledo/bank_accounting.svg?style=social&label=Fork)](https://github.com/m4rcelotoledo/bank_accounting)
+[![GitHub issues](https://img.shields.io/github/issues/m4rcelotoledo/bank_accounting.svg)](https://github.com/m4rcelotoledo/bank_accounting/issues)
