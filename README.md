@@ -81,7 +81,7 @@ Bank Accounting API is a comprehensive banking system that provides secure accou
 
 | Component | Technology | Version |
 |-----------|------------|---------|
-| **Language** | Ruby | 3.4.5 |
+| **Language** | Ruby | 3.4.6 |
 | **Framework** | Rails | 8.0.2 |
 | **Database** | PostgreSQL | 15 |
 | **Testing** | RSpec | 8.0.1 |
