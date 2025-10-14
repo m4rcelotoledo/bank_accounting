@@ -10,24 +10,24 @@ module ExceptionHandler
 
     rescue_from ActiveRecord::RecordInvalid do |error|
       json_response({ errors: [{ status: '422', title: 'Unprocessable Entity', detail: error.message }] },
-                    :unprocessable_entity)
+                    :unprocessable_content)
     end
 
     rescue_from InsufficientFunds do |error|
       json_response({ errors: [{ status: '422', title: 'Insufficient Funds', detail: error.message }] },
-                    :unprocessable_entity)
+                    :unprocessable_content)
     end
 
     rescue_from ArgumentError do |error|
       json_response({ errors: [{ status: '422', title: 'Unprocessable Entity', detail: error.message }] },
-                    :unprocessable_entity)
+                    :unprocessable_content)
     end
 
     rescue_from ActionController::ParameterMissing do |_error|
       json_response({
                       errors: [{ status: '422', title: 'Unprocessable Entity', detail: 'Missing required parameters' }]
                     },
-                    :unprocessable_entity)
+                    :unprocessable_content)
     end
   end
 

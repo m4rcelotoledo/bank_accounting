@@ -28,7 +28,7 @@ describe 'TransactionsController', type: :request do
       end
 
       it 'returns status code 422' do
-        expect(response).to have_http_status :unprocessable_entity
+        expect(response).to have_http_status :unprocessable_content
         expect(json[:errors].first[:detail]).to eq 'Missing required parameters: amount'
       end
     end
@@ -45,7 +45,7 @@ describe 'TransactionsController', type: :request do
       end
 
       it 'returns status code 422' do
-        expect(response).to have_http_status :unprocessable_entity
+        expect(response).to have_http_status :unprocessable_content
         expect(json[:errors].first[:status]).to eq '422'
         expect(json[:errors].first[:title]).to eq 'Unprocessable Entity'
       end
@@ -69,7 +69,7 @@ describe 'TransactionsController', type: :request do
           end
 
           it 'returns status code 422' do
-            expect(response).to have_http_status :unprocessable_entity
+            expect(response).to have_http_status :unprocessable_content
             expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
           end
         end
@@ -189,7 +189,7 @@ describe 'TransactionsController', type: :request do
       end
 
       it 'returns status code 422' do
-        expect(response).to have_http_status :unprocessable_entity
+        expect(response).to have_http_status :unprocessable_content
         expect(json[:errors].first[:detail]).to eq 'Missing required parameters: destination_account, amount'
       end
     end
@@ -271,7 +271,7 @@ describe 'TransactionsController', type: :request do
       end
 
       it 'returns unprocessable entity error' do
-        expect(response).to have_http_status :unprocessable_entity
+        expect(response).to have_http_status :unprocessable_content
         expect(json[:errors].first[:detail]).to eq 'Source and destination accounts must be different'
       end
     end
@@ -303,7 +303,7 @@ describe 'TransactionsController', type: :request do
           end
 
           it 'returns unprocessable entity error' do
-            expect(response).to have_http_status :unprocessable_entity
+            expect(response).to have_http_status :unprocessable_content
             expect(json[:errors].first[:detail]).to eq 'Amount must be positive'
           end
         end
@@ -338,7 +338,7 @@ describe 'TransactionsController', type: :request do
 
       it 'transaction is canceled' do
         post_transfer
-        expect(response).to have_http_status :unprocessable_entity
+        expect(response).to have_http_status :unprocessable_content
         expect(json[:errors].first[:detail]).to eq 'Transaction canceled'
         expect(json[:errors].first[:status]).to eq '422'
         expect(json[:errors].first[:title]).to eq 'Insufficient Funds'

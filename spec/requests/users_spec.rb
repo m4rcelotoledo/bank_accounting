@@ -22,7 +22,7 @@ describe 'UsersController', type: :request do
       it 'returns status code 422' do
         expect(json[:errors].first[:status]).to eq '422'
         expect(json[:errors].first[:title]).to eq 'Unprocessable Entity'
-        expect(response).to have_http_status :unprocessable_entity
+        expect(response).to have_http_status :unprocessable_content
       end
     end
 
@@ -40,7 +40,7 @@ describe 'UsersController', type: :request do
       it 'returns status code 422' do
         expect(json[:errors].first[:status]).to eq '422'
         expect(json[:errors].first[:title]).to eq 'Unprocessable Entity'
-        expect(response).to have_http_status :unprocessable_entity
+        expect(response).to have_http_status :unprocessable_content
         expect(response.body).to match(/(minimum is 8 characters)/)
       end
     end
