@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-ruby '3.4.5'
+ruby '3.4.6'
 
 gem 'active_model_serializers'
 gem 'base64', require: false
